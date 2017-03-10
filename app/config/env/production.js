@@ -4,7 +4,7 @@
 
 module.exports = {
   host: 'localhost',
-  port: process.env.NODE_PORT || 3000,
+  port: process.env.NODE_PORT || 7001,
   db: {
     database: 'kd-sound',
     username: 'mooc1988',
