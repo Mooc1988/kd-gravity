@@ -8,8 +8,8 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/',
-      handler: function * () { this.body = 'hello,world' }
+      path: '/ping',
+      handler: function * () { this.body = 'hello world' }
     }
   ]
 }
