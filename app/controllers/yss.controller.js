@@ -28,7 +28,7 @@ module.exports = {
     const {albumId, appId} = this.params
     let {YssAlbumApp} = this.models
     yield YssAlbumApp.destroy({
-      where: {yssAlbumId: albumId, appId: appId}
+      where: {YssAlbumId: albumId, appId: appId}
     })
     this.status = 201
   },
