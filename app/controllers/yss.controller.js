@@ -26,7 +26,7 @@ module.exports = {
 
   * removeFromApp () {
     const {albumId, appId} = this.params
-    let AlbumApp = this.models
+    let {AlbumApp} = this.models
     yield AlbumApp.destroy({
       where: {yssAlbumId: albumId, appId: appId}
     })
