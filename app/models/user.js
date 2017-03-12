@@ -1,4 +1,5 @@
 'use strict'
+const crypto = require('crypto')
 
 module.exports = function (sequelize, DataTypes) {
   const {STRING} = DataTypes
@@ -27,6 +28,18 @@ module.exports = function (sequelize, DataTypes) {
       type: STRING(128)
     }
   }, {
-    tableName: 'user'
+    tableName: 'user',
+    instanceMethods: {
+      hashPassword: function (password) {
+        if (this.salt && password) {
+          return crypto.pbkdf2Sync(password, new Buffer(this.salt, 'base64'), 10000, 64, 'SHA1').toString('base64')
+        } else {
+          return password
+        }
+      },
+      authenticate: function (password) {
+        return this.password === this.hashPassword(password)
+      }
+    }
   })
 }

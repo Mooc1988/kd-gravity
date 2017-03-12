@@ -5,6 +5,7 @@
 module.exports = {
   host: 'localhost',
   port: process.env.NODE_PORT || 3000,
+  jwtSecret: 'i love kuando',
   db: {
     database: 'kd-sound',
     username: 'frank',

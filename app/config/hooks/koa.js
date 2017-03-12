@@ -23,7 +23,7 @@ module.exports = app => cb => {
     koa.use(cors({maxAge: 3600}))
     koa.use(logger())
     // 所有公开的api 都以 /public 开头
-    // koa.use(jwt({secret: app.config.jwtSecret}))
+    koa.use(jwt({secret: app.config.jwtSecret, passthrough: true}))
     koa.use(bodyParser())
   }
 
