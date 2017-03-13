@@ -27,6 +27,11 @@ module.exports = {
       handler: 'Yss.findSoundsByAlbum'
     },
     {
+      method: 'GET',
+      path: '/albums/search',
+      handler: 'Yss.searchByName'
+    },
+    {
       method: 'POST',
       path: '/apps/:appId/albums/:albumId',
       handler: 'Yss.addToApp'

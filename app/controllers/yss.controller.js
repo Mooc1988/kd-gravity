@@ -62,5 +62,24 @@ module.exports = {
     }, this.query)
     const {YssSound} = this.models
     this.body = yield YssSound.findAndCountAll(condition)
+  },
+
+  * searchByName () {
+    let {keyword, offset} = this.query
+    assert(!_.isEmpty(keyword), 400, '请填写关键词')
+    let {YssAlbum, YssSearchWord} = this.models
+    keyword = _.trim(keyword)
+    const condition = {
+      offset: offset || 0,
+      limit: 20,
+      where: {
+        title: {$like: `%${keyword}%`}
+      }
+    }
+    YssSearchWord.find({keyword}).then(function (record) {
+      if (record) return record.increment({keyword: 1})
+      return YssSearchWord.create({keyword})
+    })
+    this.body = yield YssAlbum.findAndCountAll(condition)
   }
 }
