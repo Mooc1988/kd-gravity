@@ -26,6 +26,18 @@ module.exports = {
     this.body = yield ad.save()
   },
 
+  * batchAddAds () {
+    let {appId} = this.params
+    let {ads} = this.request.body
+    ads = _.isArray(ads) ? ads : [ads]
+    let {App, Ad} = this.models
+    let app = yield App.findById(appId)
+    assert(app, 400, `app不存在:[${appId}]`)
+    _.forEach(ads, ad => { ad.AppId = appId })
+    yield Ad.bulkCreate(ads)
+    this.body = yield app.getAds({attributes: {exclude: ['UserId', 'AppId']}})
+  },
+
   * modifyAdById () {
     const {adId} = this.params
     const {Ad} = this.models

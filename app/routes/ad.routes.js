@@ -14,7 +14,7 @@ module.exports = {
     {
       method: 'POST',
       path: '/apps/:appId/ads',
-      handler: 'Ad.createAd'
+      handler: 'Ad.batchAddAds'
     },
     {
       method: 'PUT',
