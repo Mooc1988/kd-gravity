@@ -76,8 +76,8 @@ module.exports = {
         title: {$like: `%${keyword}%`}
       }
     }
-    YssSearchWord.find({keyword}).then(function (record) {
-      if (record) return record.increment({keyword: 1})
+    YssSearchWord.find({where: {keyword}}).then(function (record) {
+      if (record) return record.increment({count: 1})
       return YssSearchWord.create({keyword})
     })
     this.body = yield YssAlbum.findAndCountAll(condition)
