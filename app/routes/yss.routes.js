@@ -33,7 +33,7 @@ module.exports = {
     },
     {
       method: 'POST',
-      path: '/apps/:appId/albums/:albumId',
+      path: '/apps/:appId/albums',
       handler: 'Yss.addToApp'
     },
     {

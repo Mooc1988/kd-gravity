@@ -14,14 +14,15 @@ module.exports = {
   },
 
   * addToApp () {
-    const {albumId, appId} = this.params
+    const {appId} = this.params
+    const {albumIds} = this.request.body
     let {App, YssAlbum} = this.models
-    let album = yield YssAlbum.findById(albumId)
-    assert(album, 400, `album 不存在:[${albumId}]`)
+    let albums = yield YssAlbum.findAll({where: {id: {$in: albumIds}}})
+    assert(!_.isEmpty(albums), 400, `albums 不存在:[${albumIds}]`)
     let app = yield App.findById(appId)
     assert(app, 400, `app 不存在:[${appId}]`)
-    yield app.addAlbum(album)
-    this.status = 201
+    yield app.addAlbums(albums)
+    this.body = yield app.getAlbums()
   },
 
   * removeFromApp () {
