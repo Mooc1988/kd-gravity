@@ -8,7 +8,7 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/:appId/albums',
+      path: '/apps/:appId/albums',
       handler: 'Yss.findAlbumsByApp'
     },
     {
