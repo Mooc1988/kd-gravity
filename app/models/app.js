@@ -19,6 +19,10 @@ module.exports = function (sequelize, DataTypes) {
       type: STRING(128),
       allowNull: false
     },
+
+    subType: {
+      type: STRING(128)
+    },
     // app 额外信息
     meta: {
       type: JSONB

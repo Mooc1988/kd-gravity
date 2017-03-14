@@ -9,17 +9,20 @@ module.exports = {
     {
       method: 'GET',
       path: '/',
-      handler: 'App.list'
+      handler: 'App.list',
+      roles: ['publisher', 'admin']
     },
     {
       method: 'POST',
       path: '/',
-      handler: 'App.create'
+      handler: 'App.create',
+      roles: ['publisher', 'admin']
     },
     {
       method: 'PUT',
       path: '/:appId',
-      handler: 'App.modifyById'
+      handler: 'App.modifyById',
+      roles: ['publisher', 'admin']
     }
   ]
 }

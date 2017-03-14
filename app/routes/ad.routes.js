@@ -25,6 +25,11 @@ module.exports = {
       method: 'DELETE',
       path: '/ads/:adId',
       handler: 'Ad.deleteAdById'
+    },
+    {
+      method: 'POST',
+      path: '/users/:userId/adTemplate',
+      handler: 'Ad.addAdTemplate'
     }
   ]
 }

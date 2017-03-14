@@ -53,6 +53,23 @@ module.exports = {
     let {Ad} = this.models
     yield Ad.destroy({where: {id: adId}})
     this.status = 201
-  }
+  },
 
+  * addAdTemplate () {
+    const {userId} = this.params
+    const {APP_TYPES} = this.config
+    const {type, name, ads} = this.request.body
+    assert(_.indexOf(APP_TYPES, type) > 0, 400, '无效APP类型')
+    const {AdTemplate, User} = this.models
+    let user = yield User.findById(userId)
+    assert(user, 400, '用户不存在')
+    let at = yield AdTemplate.find({where: {type, UserId: userId}})
+    if (at) {
+      _.assign(at, {ads, name})
+    } else {
+      at = AdTemplate.build(this.request.body)
+      at.UserId = userId
+    }
+    this.body = yield at.save()
+  }
 }
