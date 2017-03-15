@@ -21,11 +21,15 @@ module.exports = function (sequelize, DataTypes) {
     },
     // 姓名
     nickname: {
-      type: STRING(128)
+      type: STRING(128),
+      allowNull: false
     },
     // 角色
     role: {
-      type: STRING(128)
+      type: STRING(128),
+      allowNull: false,
+      defaultValue: 'publisher',
+      validate: {isValidRole}
     }
   }, {
     tableName: 'user',
@@ -42,4 +46,10 @@ module.exports = function (sequelize, DataTypes) {
       }
     }
   })
+}
+
+function isValidRole (value) {
+  if (value !== 'admin' || value !== 'publisher') {
+    throw new Error('非法的role合法值')
+  }
 }
