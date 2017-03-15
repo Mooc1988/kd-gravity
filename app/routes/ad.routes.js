@@ -14,22 +14,26 @@ module.exports = {
     {
       method: 'POST',
       path: '/apps/:appId/ads',
-      handler: 'Ad.batchAddAds'
+      handler: 'Ad.batchAddAds',
+      roles: ['admin']
     },
     {
       method: 'PUT',
       path: '/ads/:adId',
-      handler: 'Ad.modifyAdById'
+      handler: 'Ad.modifyAdById',
+      roles: ['admin']
     },
     {
       method: 'DELETE',
       path: '/ads/:adId',
-      handler: 'Ad.deleteAdById'
+      handler: 'Ad.deleteAdById',
+      roles: ['admin']
     },
     {
       method: 'POST',
       path: '/users/:userId/adTemplate',
-      handler: 'Ad.addAdTemplate'
+      handler: 'Ad.addAdTemplate',
+      roles: ['admin']
     }
   ]
 }
