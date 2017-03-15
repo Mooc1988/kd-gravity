@@ -29,6 +29,7 @@ module.exports = {
   * batchAddAds () {
     let {appId} = this.params
     let {ads} = this.request.body
+    assert(ads, 400, 'ads不能为空')
     ads = _.isArray(ads) ? ads : [ads]
     let {App, Ad} = this.models
     let app = yield App.findById(appId)

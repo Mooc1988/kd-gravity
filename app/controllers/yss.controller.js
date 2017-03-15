@@ -82,5 +82,11 @@ module.exports = {
       return YssSearchWord.create({keyword})
     })
     this.body = yield YssAlbum.findAndCountAll(condition)
+  },
+
+  * findHotKeywords () {
+    let {YssSearchWord} = this.models
+    let words = yield YssSearchWord.findAll({order: [['count', 'DESC']], limit: 15})
+    this.body = _.map(words, w => w.keyword)
   }
 }

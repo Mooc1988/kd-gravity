@@ -19,7 +19,6 @@ module.exports = function (sequelize, DataTypes) {
       type: STRING(128),
       allowNull: false
     },
-
     subType: {
       type: STRING(128)
     },

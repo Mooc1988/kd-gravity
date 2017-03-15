@@ -32,6 +32,11 @@ module.exports = {
       handler: 'Yss.searchByName'
     },
     {
+      method: 'GET',
+      path: '/hotKeywords',
+      handler: 'Yss.findHotKeywords'
+    },
+    {
       method: 'POST',
       path: '/apps/:appId/albums',
       handler: 'Yss.addToApp'
