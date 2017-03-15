@@ -2,7 +2,7 @@
  * Created by frank on 2017/3/9.
  */
 const _ = require('lodash')
-const assert = require('lodash')
+const assert = require('http-assert')
 
 module.exports = {
   * getAdsByApp () {
@@ -60,7 +60,7 @@ module.exports = {
     const {userId} = this.params
     const {APP_TYPES} = this.config
     const {type, name, ads} = this.request.body
-    assert(_.indexOf(APP_TYPES, type) > 0, 400, '无效APP类型')
+    assert(_.indexOf(APP_TYPES, type) > 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
     const {AdTemplate, User} = this.models
     let user = yield User.findById(userId)
     assert(user, 400, '用户不存在')
