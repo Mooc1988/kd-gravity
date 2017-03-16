@@ -43,7 +43,7 @@ module.exports = {
   * findAlbumsByCategory () {
     const {categoryId} = this.params
     let {YssAlbum} = this.models
-    const page = _.get(this.params, 'page', 1)
+    const page = _.get(this.query, 'page', 1)
     const offset = (page - 1) * LIMIT
     let cond = _.assign({
       offset,
@@ -56,7 +56,7 @@ module.exports = {
 
   * findSoundsByAlbum () {
     const {albumId} = this.params
-    const page = _.get(this.params, 'page', 1)
+    const page = _.get(this.query, 'page', 1)
     const offset = (page - 1) * LIMIT
     const condition = _.assign({
       offset,
@@ -73,7 +73,7 @@ module.exports = {
     assert(!_.isEmpty(keyword), 400, '请填写关键词')
     let {YssAlbum, YssSearchWord} = this.models
     keyword = _.trim(keyword)
-    const page = _.get(this.params, 'page', 1)
+    const page = _.get(this.query, 'page', 1)
     const offset = (page - 1) * LIMIT
     const condition = {
       offset,
