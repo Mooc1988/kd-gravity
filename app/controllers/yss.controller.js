@@ -48,7 +48,6 @@ module.exports = {
     let cond = _.assign({
       offset,
       limit: LIMIT,
-      order: [['order', 'DESC']],
       where: {YssCategoryId: categoryId}
     }, this.query)
     this.body = yield YssAlbum.findAndCountAll(cond)
