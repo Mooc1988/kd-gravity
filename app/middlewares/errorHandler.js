@@ -15,9 +15,9 @@ module.exports = function * (next) {
   } catch (err) {
     if (err.message === 'Validation error') {
       this.status = 400
-      this.body = {msg: err.errors}
+      this.body = err.errors[0]
     } else {
-      this.body = {msg: err.message}
+      this.body = {message: err.message}
       this.status = err.status || 500
       if (this.status >= 500) {
         console.error('request url: ', this.url)
@@ -29,4 +29,3 @@ module.exports = function * (next) {
     }
   }
 }
-

@@ -3,6 +3,7 @@
  */
 const _ = require('lodash')
 const assert = require('http-assert')
+const LIMIT = 50
 
 module.exports = {
 
@@ -13,8 +14,14 @@ module.exports = {
       model: User,
       attributes: ['id', 'username', 'nickname']
     }]
-    let order = [['createdAt', 'DESC']]
-    let cond = _.assign({include, order, offset: 0, limit: 20}, this.query)
+    const order = [['createdAt', 'DESC']]
+    const where = getQuery(this.query)
+    let {search} = this.query
+    if (!_.isEmpty(search)) {
+      where.name = {$like: `%${search}%`}
+    }
+    const {offset, limit} = getPage(this.query)
+    const cond = {include, order, offset, limit, where}
     this.body = yield App.findAndCountAll(cond)
   },
 
@@ -55,4 +62,14 @@ module.exports = {
     yield App.update({state: 0}, {where: {id: appId}})
     this.status = 201
   }
+}
+
+function getPage (query) {
+  const page = _.get(this.query, 'page', 1)
+  const offset = (page - 1) * LIMIT
+  return {offset, limit: LIMIT}
+}
+
+function getQuery (query) {
+  return _.omitBy(_.omit(query, ['page', 'search']), _.isEmpty)
 }

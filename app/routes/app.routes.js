@@ -23,6 +23,12 @@ module.exports = {
       path: '/:appId',
       handler: 'App.modifyById',
       roles: ['publisher', 'admin']
+    },
+    {
+      method: 'DELETE',
+      path: '/:appId',
+      handler: 'App.deleteById',
+      roles: ['publisher', 'admin']
     }
   ]
 }
