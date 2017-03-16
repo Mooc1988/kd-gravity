@@ -25,7 +25,7 @@ module.exports = {
     const {user} = this.state
     const UserId = user.id
     let {type, name} = this.request.body
-    assert(_.indexOf(APP_TYPES, type) > 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
+    assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
     let app = App.build({type, name, UserId})
     let at = yield AdTemplate.find({where: {type, UserId}})
     assert(at, 400, '先创建广告模版才能创建APP')
@@ -46,5 +46,13 @@ module.exports = {
     assert(app, 400, `app不存在${appId}`)
     _.assign(app, data)
     this.body = yield app.save()
+  },
+
+  // 假删除
+  * deleteById () {
+    let {appId} = this.params
+    let {App} = this.models
+    yield App.update({state: 0}, {where: {id: appId}})
+    this.status = 201
   }
 }
