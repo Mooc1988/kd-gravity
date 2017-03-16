@@ -3,6 +3,7 @@
  */
 const _ = require('lodash')
 const assert = require('http-assert')
+const LIMIT = 30
 module.exports = {
 
   * findAlbumsByApp () {
@@ -42,22 +43,24 @@ module.exports = {
   * findAlbumsByCategory () {
     const {categoryId} = this.params
     let {YssAlbum} = this.models
+    const page = _.get(this.params, 'page', 1)
+    const offset = (page - 1) * LIMIT
     let cond = _.assign({
-      offset: 0,
-      limit: 20,
+      offset,
+      limit: LIMIT,
       order: [['order', 'DESC']],
-      where: {
-        YssCategoryId: categoryId
-      }
+      where: {YssCategoryId: categoryId}
     }, this.query)
     this.body = yield YssAlbum.findAndCountAll(cond)
   },
 
   * findSoundsByAlbum () {
     const {albumId} = this.params
+    const page = _.get(this.params, 'page', 1)
+    const offset = (page - 1) * LIMIT
     const condition = _.assign({
-      offset: 0,
-      limit: 20,
+      offset,
+      limit: LIMIT,
       order: ['id'],
       where: {YssAlbumId: albumId}
     }, this.query)
@@ -66,16 +69,16 @@ module.exports = {
   },
 
   * searchByName () {
-    let {keyword, offset} = this.query
+    let {keyword} = this.query
     assert(!_.isEmpty(keyword), 400, '请填写关键词')
     let {YssAlbum, YssSearchWord} = this.models
     keyword = _.trim(keyword)
+    const page = _.get(this.params, 'page', 1)
+    const offset = (page - 1) * LIMIT
     const condition = {
-      offset: offset || 0,
-      limit: 20,
-      where: {
-        title: {$like: `%${keyword}%`}
-      }
+      offset,
+      limit: LIMIT,
+      where: {title: {$like: `%${keyword}%`}}
     }
     YssSearchWord.find({where: {keyword}}).then(function (record) {
       if (record) return record.increment({count: 1})
