@@ -28,8 +28,7 @@ module.exports = function (sequelize, DataTypes) {
     role: {
       type: STRING(128),
       allowNull: false,
-      defaultValue: 'publisher',
-      validate: {isValidRole}
+      defaultValue: 'publisher'
     }
   }, {
     tableName: 'user',
@@ -46,10 +45,4 @@ module.exports = function (sequelize, DataTypes) {
       }
     }
   })
-}
-
-function isValidRole (value) {
-  if (value !== 'admin' || value !== 'publisher') {
-    throw new Error('非法的role合法值')
-  }
 }
