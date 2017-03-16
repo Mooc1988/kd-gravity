@@ -8,7 +8,7 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/apps/:appId/albums',
+      path: '/apps/:appId(\\d+)/albums',
       handler: 'Yss.findAlbumsByApp'
     },
     {
@@ -18,12 +18,17 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/categories/:categoryId/albums',
+      path: '/categories/:categoryId([a-zA-Z]+)/albums',
       handler: 'Yss.findAlbumsByCategory'
     },
     {
       method: 'GET',
-      path: '/albums/:albumId/sounds',
+      path: '/albums',
+      handler: 'Yss.findAlbums'
+    },
+    {
+      method: 'GET',
+      path: '/albums/:albumId(\\d+)/sounds',
       handler: 'Yss.findSoundsByAlbum'
     },
     {
@@ -38,12 +43,12 @@ module.exports = {
     },
     {
       method: 'POST',
-      path: '/apps/:appId/albums',
+      path: '/apps/:appId(\\d+)/albums',
       handler: 'Yss.addToApp'
     },
     {
       method: 'DELETE',
-      path: '/apps/:appId/albums/:albumId',
+      path: '/apps/:appId(\\d+)/albums/:albumId(\\d+)',
       handler: 'Yss.removeFromApp'
     }
   ]

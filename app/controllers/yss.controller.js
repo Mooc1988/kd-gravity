@@ -22,6 +22,7 @@ module.exports = {
     assert(!_.isEmpty(albums), 400, `albums 不存在:[${albumIds}]`)
     let app = yield App.findById(appId)
     assert(app, 400, `app 不存在:[${appId}]`)
+    assert(app.type === '有声书', 400, 'app类型必须为[有声书]')
     yield app.addAlbums(albums)
     this.body = yield app.getAlbums()
   },
@@ -67,6 +68,22 @@ module.exports = {
     this.body = yield YssSound.findAndCountAll(condition)
   },
 
+  * findAlbums () {
+    let {YssAlbum, YssCategory} = this.models
+    let include = [{
+      model: YssCategory,
+      attributes: ['id', 'title']
+    }]
+    const where = getQuery(this.query)
+    let {search} = this.query
+    if (!_.isEmpty(search)) {
+      where.title = {$like: `%${search}%`}
+    }
+    const {offset, limit} = getPage(this.query)
+    const cond = {include, offset, limit, where}
+    this.body = yield YssAlbum.findAndCountAll(cond)
+  },
+
   * searchByName () {
     let {keyword} = this.query
     assert(!_.isEmpty(keyword), 400, '请填写关键词')
@@ -91,4 +108,14 @@ module.exports = {
     let words = yield YssSearchWord.findAll({order: [['count', 'DESC']], limit: 15})
     this.body = _.map(words, w => w.keyword)
   }
+}
+
+function getPage (query) {
+  const page = _.get(query, 'page', 1)
+  const offset = (page - 1) * LIMIT
+  return {offset, limit: LIMIT}
+}
+
+function getQuery (query) {
+  return _.omitBy(_.omit(query, ['page', 'search']), _.isEmpty)
 }
