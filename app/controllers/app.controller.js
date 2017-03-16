@@ -65,7 +65,7 @@ module.exports = {
 }
 
 function getPage (query) {
-  const page = _.get(this.query, 'page', 1)
+  const page = _.get(query, 'page', 1)
   const offset = (page - 1) * LIMIT
   return {offset, limit: LIMIT}
 }
