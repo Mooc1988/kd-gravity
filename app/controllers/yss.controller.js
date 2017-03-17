@@ -77,7 +77,10 @@ module.exports = {
     const where = getQuery(this.query)
     let {search} = this.query
     if (!_.isEmpty(search)) {
-      where.title = {$like: `%${search}%`}
+      where.$or = [
+        {title: {$like: `%${search}%`}},
+        {tags: {$contains: [search]}}
+      ]
     }
     const {offset, limit} = getPage(this.query)
     const cond = {include, offset, limit, where}
