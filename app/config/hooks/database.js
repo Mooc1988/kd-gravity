@@ -12,10 +12,19 @@ module.exports = app => cb => {
     const {database, username, password, config} = app.config.db
     const models = {}
     const seq = new Sequelize(database, username, password, config)
+    // 优化成递归注册model
     fs.readdirSync(MODEL_PATH)
       .forEach(function (file) {
-        const model = seq.import(path.join(MODEL_PATH, file))
-        models[model.name] = model
+        const filePath = path.join(MODEL_PATH, file)
+        if (file.indexOf('js') < 0) {
+          fs.readdirSync(filePath).forEach(function (file) {
+            const model = seq.import(path.join(filePath, file))
+            models[model.name] = model
+          })
+        } else {
+          const model = seq.import(path.join(MODEL_PATH, file))
+          models[model.name] = model
+        }
       })
 
     Object.keys(models).forEach(function (modelName) {
