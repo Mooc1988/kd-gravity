@@ -8,7 +8,7 @@ module.exports = {
   * getAdsByApp () {
     let {appId} = this.params
     let {App} = this.models
-    let app = yield App.findById(appId, {attributes: ['id', 'name', 'enableComment', 'meta']})
+    let app = yield App.findById(appId, {attributes: ['id', 'name', 'auditMode', 'meta']})
     assert(app, 400, `app不存在:[${appId}]`)
     let ads = yield app.getAds({attributes: {exclude: ['UserId', 'AppId']}})
     ads = _.keyBy(ads, ad => ad.position)
