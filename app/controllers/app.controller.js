@@ -61,6 +61,17 @@ module.exports = {
     let {App} = this.models
     yield App.update({state: 0}, {where: {id: appId}})
     this.status = 201
+  },
+
+  * switchAuditMode () {
+    let {appId} = this.params
+    let {App} = this.models
+    let app = yield App.findById(appId)
+    assert(app, 400, `app不存在${appId}`)
+    let {auditMode} = app
+    app.auditMode = !auditMode
+    yield app.save()
+    this.status = 201
   }
 }
 

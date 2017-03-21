@@ -9,10 +9,10 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       unique: true
     },
-    // 评价开关
-    enableComment: {
+    // 审核开关
+    auditMode: {
       type: BOOLEAN,
-      defaultValue: false
+      defaultValue: true
     },
     // 类型
     type: {
@@ -37,12 +37,16 @@ module.exports = function (sequelize, DataTypes) {
       }
     },
     classMethods: {
-      associate ({App, User, YssAlbum, YssAlbumApp, Ad}) {
+      associate ({App, User, YssAlbum, YssAlbumApp, DzsBook, DzsBookshelf, Ad}) {
         App.belongsTo(User)
         App.hasMany(Ad)
         App.belongsToMany(YssAlbum, {
           as: 'Albums',
           through: {model: YssAlbumApp}
+        })
+        App.belongsToMany(DzsBook, {
+          as: 'Books',
+          through: {model: DzsBookshelf}
         })
       }
     },

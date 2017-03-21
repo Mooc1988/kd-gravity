@@ -25,6 +25,12 @@ module.exports = {
       roles: ['publisher', 'admin']
     },
     {
+      method: 'PUT',
+      path: '/:appId/switchAuditMode',
+      handler: 'App.switchAuditMode',
+      roles: ['publisher', 'admin']
+    },
+    {
       method: 'DELETE',
       path: '/:appId',
       handler: 'App.deleteById',
