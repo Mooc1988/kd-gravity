@@ -14,6 +14,11 @@ module.exports = function (sequelize, DataTypes) {
       type: BOOLEAN,
       defaultValue: true
     },
+    // 评论开关
+    enableComment: {
+      type: BOOLEAN,
+      defaultValue: false
+    },
     // 类型
     type: {
       type: STRING(128),
