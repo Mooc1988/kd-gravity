@@ -13,16 +13,6 @@ module.exports = function (sequelize) {
     enable: {
       type: BOOLEAN,
       defaultValue: true
-    },
-    // 标识符, 指定特殊的分类
-    key: {
-      type: STRING(128),
-      defaultValue: 'general'
-    },
-    // 排序
-    order: {
-      type: INTEGER.UNSIGNED,
-      defaultValue: 1
     }
   }, {
     classMethods: {
@@ -32,6 +22,7 @@ module.exports = function (sequelize) {
         DzsCategory.hasMany(DzsBook)
       }
     },
-    tableName: 'dzs_category'
+    tableName: 'dzs_category',
+    timestamps: false
   })
 }

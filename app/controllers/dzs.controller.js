@@ -19,7 +19,7 @@ module.exports = {
   },
 
   // 获取图书列表,支持分页和搜索
-  * findBook () {
+  * findBooks () {
     let {DzsBook} = this.models
     const {offset, limit} = getPage(this.query)
     const {search} = this.query

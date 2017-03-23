@@ -110,6 +110,15 @@ module.exports = {
     let {YssSearchWord} = this.models
     let words = yield YssSearchWord.findAll({order: [['count', 'DESC']], limit: 15})
     this.body = _.map(words, w => w.keyword)
+  },
+
+  * modifyAlbumById () {
+    let {YssAlbum} = this.models
+    let {albumId} = this.params
+    let {title} = this.request.body
+    let album = yield YssAlbum.findById(albumId)
+    assert(album, 400, '专辑不存在')
+    this.body = yield album.update({title})
   }
 }
 

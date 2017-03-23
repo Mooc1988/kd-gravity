@@ -1,13 +1,17 @@
 'use strict'
 
 module.exports = function (sequelize) {
-  const {STRING, INTEGER} = sequelize.Sequelize
+  const {STRING, INTEGER, ARRAY, TEXT} = sequelize.Sequelize
   return sequelize.define('DzsBook', {
-    // 名称
-    name: {
+    uid: {
       type: STRING(128),
       allowNull: false,
       unique: true
+    },
+    // 名称
+    title: {
+      type: STRING(128),
+      allowNull: false
     },
     // 作者
     author: {
@@ -15,10 +19,22 @@ module.exports = function (sequelize) {
     },
     // 简介
     brief: {
-      type: STRING(2048)
+      type: TEXT
+    },
+    coverImage: {
+      type: STRING(512)
+    },
+    tags: {
+      type: ARRAY(STRING(128))
+    },
+
+    // 章节数量
+    chapterCount: {
+      type: INTEGER,
+      defaultValue: 0
     },
     // 阅读量
-    pv: {
+    viewCount: {
       type: INTEGER.UNSIGNED,
       defaultValue: 0
     },
@@ -32,9 +48,10 @@ module.exports = function (sequelize) {
       associate (model) {
         let {DzsBook, DzsCategory, App, DzsBookshelf} = model
         DzsBook.belongsToMany(App, {through: DzsBookshelf})
-        DzsCategory.belongsTo(DzsCategory)
+        DzsBook.belongsTo(DzsCategory)
       }
     },
-    tableName: 'dzs_book'
+    tableName: 'dzs_book',
+    timestamps: false
   })
 }
