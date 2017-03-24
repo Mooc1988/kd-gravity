@@ -18,7 +18,7 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/categories/:categoryId([a-zA-Z]+)/albums',
+      path: '/categories/:categoryId([a-zA-Z0-9]+)/albums',
       handler: 'Yss.findAlbumsByCategory'
     },
     {

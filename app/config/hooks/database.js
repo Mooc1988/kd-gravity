@@ -32,7 +32,14 @@ module.exports = app => cb => {
         models[modelName].associate(models)
       }
     })
-    seq.sync()
+
+    if (process.env.NODE_ENV === 'development') {
+      seq.sync()
+    }
+    // 里面禁止修改
+    if (process.env.NODE_ENV === 'production') {
+      seq.sync()
+    }
     app.models = models
     console.log('init database and models successfully')
     cb()
