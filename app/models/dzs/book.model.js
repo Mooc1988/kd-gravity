@@ -42,6 +42,11 @@ module.exports = function (sequelize) {
     downloadCount: {
       type: INTEGER.UNSIGNED,
       defaultValue: 0
+    },
+    // 1：完成 0: 未完成
+    state: {
+      type: INTEGER,
+      defaultValue: 0
     }
   }, {
     classMethods: {
