@@ -55,7 +55,7 @@ module.exports = {
   },
 
   // 添加进书架
-  * addToBookshelf () {
+  * addToApp () {
     const {appId} = this.params
     const {bookIds} = this.request.body
     let {App, DzsBook} = this.models
@@ -63,7 +63,7 @@ module.exports = {
     assert(!_.isEmpty(books), 400, `books 不存在:[${bookIds}]`)
     let app = yield App.findById(appId)
     assert(app, 400, `app 不存在:[${appId}]`)
-    assert(app.type === '电子书', 400, 'app类型必须为[有声书]')
+    assert(app.type === '电子书', 400, 'app类型必须为[电子书]')
     yield app.addBooks(books)
     this.body = yield app.getBooks()
   },
@@ -77,7 +77,6 @@ module.exports = {
     })
     this.status = 201
   }
-
 }
 
 function getPage (query) {
@@ -86,6 +85,3 @@ function getPage (query) {
   return {offset, limit: LIMIT}
 }
 
-function getQuery (query) {
-  return _.omitBy(_.omit(query, ['page', 'search']), _.isEmpty)
-}

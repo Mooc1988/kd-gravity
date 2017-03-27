@@ -9,7 +9,7 @@ module.exports = {
     {
       method: 'GET',
       path: '/ping',
-      handler: function * () { this.body = 'hello world' }
+      handler: function * () { this.body = '-' }
     }
   ]
 }
