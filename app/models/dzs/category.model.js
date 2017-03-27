@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = function (sequelize) {
-  const {STRING, BOOLEAN, INTEGER} = sequelize.Sequelize
+  const {STRING, BOOLEAN} = sequelize.Sequelize
   return sequelize.define('DzsCategory', {
     // 名称
     name: {
@@ -17,9 +17,8 @@ module.exports = function (sequelize) {
   }, {
     classMethods: {
       associate (model) {
-        const {DzsCategory, DzsTopic, DzsBook, DzsCategoryTopic} = model
+        const {DzsCategory, DzsTopic, DzsCategoryTopic} = model
         DzsCategory.belongsToMany(DzsTopic, {through: DzsCategoryTopic})
-        DzsCategory.hasMany(DzsBook)
       }
     },
     tableName: 'dzs_category',

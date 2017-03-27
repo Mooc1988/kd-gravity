@@ -49,11 +49,15 @@ module.exports = function (sequelize) {
       defaultValue: 0
     }
   }, {
+    defaultScope: {
+      where: {
+        state: 1
+      }
+    },
     classMethods: {
       associate (model) {
-        let {DzsBook, DzsCategory, App, DzsBookshelf} = model
+        let {DzsBook, App, DzsBookshelf} = model
         DzsBook.belongsToMany(App, {through: DzsBookshelf})
-        DzsBook.belongsTo(DzsCategory)
       }
     },
     tableName: 'dzs_book',

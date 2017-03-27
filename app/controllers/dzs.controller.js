@@ -20,18 +20,28 @@ module.exports = {
 
   // 获取图书列表,支持分页和搜索
   * findBooks () {
-    let {DzsBook} = this.models
+    let {DzsBook, DzsSearchWord} = this.models
     const {offset, limit} = getPage(this.query)
-    const {search} = this.query
-    let where = getQuery(this.query)
-    if (!_.isEmpty(search)) {
-      where.$or = [
-        {name: {$like: `%${search}%`}},
-        {author: {$like: `%${search}%`}}
-      ]
+    const {keyword, tag} = this.query
+    let where = {}
+    if (!_.isEmpty(tag)) {
+      const tags = tag.split(',')
+      where.tags = {$contains: tags}
     }
-    const cond = {where, offset, limit, search}
+    if (!_.isEmpty(keyword)) {
+      where.$or = [{title: {$like: `%${keyword}%`}}, {author: {$like: `%${keyword}%`}}]
+      DzsSearchWord.find({where: {keyword}}).then(function (record) {
+        if (record) return record.increment({count: 1})
+        return DzsSearchWord.create({keyword})
+      })
+    }
+    const cond = {where, offset, limit}
     this.body = yield DzsBook.findAndCountAll(cond)
+  },
+
+  * findCategories () {
+    let {DzsCategory} = this.models
+    this.body = yield DzsCategory.findAll()
   },
 
   // 修改指定图书
