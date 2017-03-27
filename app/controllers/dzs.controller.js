@@ -7,7 +7,14 @@ const assert = require('http-assert')
 const LIMIT = 30
 
 module.exports = {
-
+  // 根据appId获取图书列表
+  * findBooksByApp () {
+    const {appId} = this.params
+    let {App} = this.models
+    let app = yield App.findById(appId)
+    assert(app, 400, `app不存在:[${appId}]`)
+    this.body = yield app.getBooks()
+  },
   // 添加书籍
   * addBook () {
     let {DzsBook} = this.models
@@ -84,4 +91,3 @@ function getPage (query) {
   const offset = (page - 1) * LIMIT
   return {offset, limit: LIMIT}
 }
-

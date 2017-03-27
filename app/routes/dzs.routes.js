@@ -16,6 +16,11 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/apps/:appId(\\d+)/books',
+      handler: 'Dzs.findBooksByApp'
+    },
+    {
+      method: 'GET',
       path: '/categories',
       handler: 'Dzs.findCategories'
     },
