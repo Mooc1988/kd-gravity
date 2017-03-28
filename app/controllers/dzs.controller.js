@@ -29,11 +29,14 @@ module.exports = {
   * findBooks () {
     let {DzsBook, DzsSearchWord} = this.models
     const {offset, limit} = getPage(this.query)
-    const {keyword, tag} = this.query
+    const {keyword, tag, category} = this.query
     let where = {}
     if (!_.isEmpty(tag)) {
       const tags = tag.split(',')
       where.tags = {$contains: tags}
+    }
+    if (!_.isEmpty(category)) {
+      where.DzsCategoryId = category
     }
     if (!_.isEmpty(keyword)) {
       where.$or = [{title: {$like: `%${keyword}%`}}, {author: {$like: `%${keyword}%`}}]
