@@ -16,7 +16,7 @@ module.exports = {
       dialect: 'postgres'
     }
   },
-  redis: {
+  redisConfig: {
     host: 'a97582a7d76211e4.m.cnbja.kvstore.aliyuncs.com',
     port: 6379,
     password: 'a97582a7d76211e4:Mooc1988',
