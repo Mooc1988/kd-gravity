@@ -107,6 +107,38 @@ module.exports = {
       if (record) return record.increment({viewCount: 1})
     })
     this.status = 201
+  },
+
+  * topN () {
+    let cacheKey = 'books:top20'
+    let {category} = this.query
+    let {DzsBook} = this.models
+    let where = {}
+    let limit = 20
+    if (!_.isEmpty(category)) {
+      where.DzsCategoryId = category
+      cacheKey = `books:top:categories:${category}`
+    }
+    let order = [['viewCount', 'DESC']]
+    let attributes = ['id', 'title', 'coverImage', 'viewCount']
+    let cacheData
+    try {
+      cacheData = yield this.redis.get(cacheKey)
+    } catch (err) {
+      console.error(err)
+    }
+    if (cacheData) {
+      this.body = JSON.parse(cacheData)
+    } else {
+      let books = yield DzsBook.findAll({where, order, attributes, limit})
+      try {
+        let EX = 60 * 60 * 12  // 12 hours
+        yield this.redis.set(cacheKey, JSON.stringify(books), 'EX', EX)
+      } catch (err) {
+        console.error(err)
+      }
+      this.body = books
+    }
   }
 }
 

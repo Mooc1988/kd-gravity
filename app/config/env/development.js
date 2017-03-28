@@ -14,5 +14,8 @@ module.exports = {
       host: 'localhost',
       dialect: 'postgres'
     }
+  },
+  redisConfig: {
+    host: 'localhost'
   }
 }

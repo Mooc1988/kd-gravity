@@ -8,6 +8,7 @@ const bodyParser = require('koa-bodyparser')
 const cors = require('kcors')
 const logger = require('koa-logger')
 const jwt = require('koa-jwt')
+const ONE_WEEK = 3600 * 24 * 7
 
 module.exports = app => cb => {
   try {
@@ -20,7 +21,7 @@ module.exports = app => cb => {
   }
 
   function initMiddleware (koa) {
-    koa.use(cors({maxAge: 3600}))
+    koa.use(cors({maxAge: ONE_WEEK}))
     koa.use(logger())
     // 所有公开的api 都以 /public 开头
     koa.use(jwt({secret: app.config.jwtSecret, passthrough: true}))
