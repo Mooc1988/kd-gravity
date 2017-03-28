@@ -98,6 +98,15 @@ module.exports = {
       where: {DzsBookId: bookId, AppId: appId}
     })
     this.status = 201
+  },
+
+  * increaseViewCount () {
+    let {DzsBook} = this.models
+    let {bookId} = this.params
+    DzsBook.find({where: {id: bookId}}).then(function (record) {
+      if (record) return record.increment({viewCount: 1})
+    })
+    this.status = 201
   }
 }
 

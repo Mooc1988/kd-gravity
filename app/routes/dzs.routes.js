@@ -32,7 +32,13 @@ module.exports = {
     {
       method: 'POST',
       path: '/apps/:appId(\\d+)/books',
-      handler: 'Dzs.addToApp'
+      handler: 'Dzs.addToApp',
+      roles: ['admin', 'publisher']
+    },
+    {
+      method: 'PUT',
+      path: '/books/:bookId/viewCount',
+      handler: 'Dzs.increaseViewCount'
     }
   ]
 }
