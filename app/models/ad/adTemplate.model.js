@@ -9,7 +9,9 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       unique: true
     },
-
+    recommendLink: {
+      type: STRING(256)
+    },
     // app类型,与app表保持一致
     type: {
       type: STRING(128),

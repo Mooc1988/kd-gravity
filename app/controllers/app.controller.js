@@ -36,6 +36,10 @@ module.exports = {
     let app = App.build({type, name, UserId})
     let at = yield AdTemplate.find({where: {type, UserId}})
     assert(at, 400, '先创建广告模版才能创建APP')
+    let {recommendLink} = at
+    if (recommendLink) {
+      app.recommendLink = recommendLink
+    }
     app = yield app.save()
     let {ads} = at
     _.forEach(ads, ad => { ad.AppId = app.id })

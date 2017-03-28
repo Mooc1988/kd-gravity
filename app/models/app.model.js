@@ -9,6 +9,9 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       unique: true
     },
+    recommendLink: {
+      type: STRING(256)
+    },
     // 审核开关
     auditMode: {
       type: BOOLEAN,
