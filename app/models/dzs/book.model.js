@@ -56,8 +56,9 @@ module.exports = function (sequelize) {
     },
     classMethods: {
       associate (model) {
-        let {DzsBook, App, DzsBookshelf} = model
+        let {DzsBook, App, DzsBookshelf, DzsCategory} = model
         DzsBook.belongsToMany(App, {through: DzsBookshelf})
+        DzsBook.belongsTo(DzsCategory)
       }
     },
     tableName: 'dzs_book',

@@ -51,6 +51,18 @@ module.exports = {
     this.body = yield DzsCategory.findAll()
   },
 
+  * findBooksByCategory () {
+    let {categoryId} = this.params
+    let {DzsBook} = this.models
+    const {offset, limit} = getPage(this.query)
+    let cond = _.assign({
+      offset,
+      limit,
+      where: {DzsCategoryId: categoryId}
+    }, this.query)
+    this.body = yield DzsBook.findAndCountAll(cond)
+  },
+
   // 修改指定图书
   * modifyBookById () {
     let {DzsBook} = this.models
