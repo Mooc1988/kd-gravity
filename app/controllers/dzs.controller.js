@@ -27,7 +27,7 @@ module.exports = {
 
   // 获取图书列表,支持分页和搜索
   * findBooks () {
-    let attributes = ['id', 'title', 'coverImage', 'viewCount', 'author', 'brief']
+    let attributes = ['id', 'title', 'coverImage', 'viewCount', 'author', 'brief', 'uid']
     let {DzsBook, DzsSearchWord} = this.models
     const {offset, limit} = getPage(this.query)
     const {keyword, tag, category} = this.query
@@ -121,7 +121,7 @@ module.exports = {
       cacheKey = `books:top:categories:${category}`
     }
     let order = [['viewCount', 'DESC']]
-    let attributes = ['id', 'title', 'coverImage', 'viewCount', 'author', 'brief']
+    let attributes = ['id', 'title', 'coverImage', 'viewCount', 'author', 'brief', 'uid']
     let cacheData
     try {
       cacheData = yield this.redis.get(cacheKey)
