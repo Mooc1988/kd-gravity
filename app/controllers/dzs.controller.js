@@ -27,7 +27,6 @@ module.exports = {
 
   // 获取图书列表,支持分页和搜索
   * findBooks () {
-    let attributes = ['id', 'title', 'coverImage', 'viewCount', 'author', 'brief', 'uid']
     let {DzsBook, DzsSearchWord} = this.models
     const {offset, limit} = getPage(this.query)
     const {keyword, tag, category} = this.query
@@ -46,7 +45,7 @@ module.exports = {
         return DzsSearchWord.create({keyword})
       })
     }
-    const cond = {where, offset, limit, attributes}
+    const cond = {where, offset, limit}
     this.body = yield DzsBook.findAndCountAll(cond)
   },
 
