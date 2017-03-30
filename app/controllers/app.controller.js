@@ -69,12 +69,18 @@ module.exports = {
 
   * switchAuditMode () {
     let {appId} = this.params
+    let cacheKey = makeCacheKey(appId)
     let {App} = this.models
     let app = yield App.findById(appId)
     assert(app, 400, `app不存在${appId}`)
     let {auditMode} = app
     app.auditMode = !auditMode
     yield app.save()
+    try {
+      yield this.redis.del(cacheKey)
+    } catch (err) {
+      console.error(err)
+    }
     this.status = 201
   }
 }
@@ -87,4 +93,8 @@ function getPage (query) {
 
 function getQuery (query) {
   return _.omitBy(_.omit(query, ['page', 'search']), _.isEmpty)
+}
+
+function makeCacheKey (appId) {
+  return `ad:${appId}`
 }
