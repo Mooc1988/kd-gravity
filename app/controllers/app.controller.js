@@ -51,12 +51,19 @@ module.exports = {
   // 修改APP信息
   * modifyById () {
     const {appId} = this.params
+    let cacheKey = makeCacheKey(appId)
     let data = this.request.body
     let {App} = this.models
     let app = yield App.findById(appId)
     assert(app, 400, `app不存在${appId}`)
     _.assign(app, data)
-    this.body = yield app.save()
+    yield app.save()
+    try {
+      yield this.redis.del(cacheKey)
+    } catch (err) {
+      console.error(err)
+    }
+    this.body = app
   },
 
   // 假删除
