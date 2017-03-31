@@ -12,6 +12,9 @@ module.exports = function (sequelize, DataTypes) {
     recommendLink: {
       type: STRING(256)
     },
+    meta: {
+      type: JSONB
+    },
     // app类型,与app表保持一致
     type: {
       type: STRING(128),
