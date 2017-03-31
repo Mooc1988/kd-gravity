@@ -1,7 +1,7 @@
 'use strict'
 // 专辑模型
 module.exports = function (sequelize, DataTypes) {
-  const {STRING, BOOLEAN, INTEGER, ARRAY, DATEONLY} =DataTypes
+  const {STRING, BOOLEAN, INTEGER, ARRAY, TEXT, DATEONLY} = DataTypes
   return sequelize.define('YssAlbum', {
     id: {
       primaryKey: true,
@@ -11,6 +11,13 @@ module.exports = function (sequelize, DataTypes) {
     title: {
       type: STRING(128),
       allowNull: false
+    },
+    // 作者
+    author: {
+      type: STRING(128)
+    },
+    brief: {
+      type: TEXT
     },
     // 开启
     enable: {
