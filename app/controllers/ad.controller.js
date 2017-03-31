@@ -106,14 +106,14 @@ module.exports = {
   * addAdTemplate () {
     const {userId} = this.params
     const {APP_TYPES} = this.config
-    const {type, name, ads, meta} = this.request.body
+    const {type} = this.request.body
     assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
     const {AdTemplate, User} = this.models
     let user = yield User.findById(userId)
     assert(user, 400, '用户不存在')
     let at = yield AdTemplate.find({where: {type, UserId: userId}})
     if (at) {
-      _.assign(at, {ads, name, meta})
+      _.assign(at, this.request.body)
     } else {
       at = AdTemplate.build(this.request.body)
       at.UserId = userId
