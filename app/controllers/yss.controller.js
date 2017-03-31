@@ -69,7 +69,11 @@ module.exports = {
   },
 
   * findAlbums () {
-    let {YssAlbum} = this.models
+    let {YssAlbum, YssCategory} = this.models
+    let include = [{
+      model: YssCategory,
+      attributes: ['id', 'title']
+    }]
     const where = getQuery(this.query)
     let {search} = this.query
     if (!_.isEmpty(search)) {
@@ -79,7 +83,7 @@ module.exports = {
       ]
     }
     const {offset, limit} = getPage(this.query)
-    const cond = {offset, limit, where}
+    const cond = {include, offset, limit, where}
     this.body = yield YssAlbum.findAndCountAll(cond)
   },
 
