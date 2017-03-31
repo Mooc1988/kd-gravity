@@ -79,7 +79,7 @@ module.exports = {
     _.assign(ad, data)
     yield ad.save()
     try {
-      let cacheKey = makeCacheKey(ad.AppIdA)
+      let cacheKey = makeCacheKey(ad.AppId)
       yield this.redis.del(cacheKey)
     } catch (err) {
       console.error(err)
