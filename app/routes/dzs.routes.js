@@ -42,8 +42,13 @@ module.exports = {
     },
     {
       method: 'PUT',
-      path: '/books/:bookId/viewCount',
+      path: '/books/:bookId(\\d+)/viewCount',
       handler: 'Dzs.increaseViewCount'
+    },
+    {
+      method: 'PUT',
+      path: '/books/:bookId(\\d+)',
+      handler: 'Dzs.modifyBookById'
     }
   ]
 }
