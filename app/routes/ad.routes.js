@@ -28,12 +28,6 @@ module.exports = {
       path: '/ads/:adId',
       handler: 'Ad.deleteAdById',
       roles: ['admin']
-    },
-    {
-      method: 'POST',
-      path: '/users/:userId/adTemplate',
-      handler: 'Ad.addAdTemplate',
-      roles: ['admin']
     }
   ]
 }

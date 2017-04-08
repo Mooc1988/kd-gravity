@@ -112,14 +112,42 @@ module.exports = {
     let user = yield User.findById(userId)
     assert(user, 400, '用户不存在')
     let at = yield AdTemplate.find({where: {type, UserId: userId}})
-    if (at) {
-      _.assign(at, this.request.body)
-    } else {
-      at = AdTemplate.build(this.request.body)
-      at.UserId = userId
-    }
+    assert(!at, 400, `该用户在[${type}] 下已经存在模版`)
+    at = AdTemplate.build(this.request.body)
+    at.UserId = userId
     this.body = yield at.save()
+  },
+
+  * getTemplates () {
+    const {AdTemplate, User} = this.models
+    let include = [{
+      model: User,
+      attributes: ['id', 'nickname']
+    }]
+    this.body = yield AdTemplate.findAndCountAll({
+      include,
+      attributes: ['id', 'name', 'recommendLink', 'type', 'meta', 'createdAt']
+    })
+  },
+
+  * getTemplateById () {
+    const {AdTemplate, User} = this.models
+    let {templateId} = this.params
+    let include = [{
+      model: User,
+      attributes: ['id', 'nickname']
+    }]
+    this.body = yield AdTemplate.findById(templateId, {include})
+  },
+
+  * modifyTemplateById () {
+    let {AdTemplate} = this.models
+    let {templateId} = this.params
+    let template = yield AdTemplate.findById(templateId)
+    _.assign(template, _.omit(this.request.body))
+    this.body = yield template.save()
   }
+
 }
 
 function makeCacheKey (appId) {
