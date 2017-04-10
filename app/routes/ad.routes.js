@@ -8,24 +8,30 @@ module.exports = {
   routes: [
     {
       method: 'GET',
-      path: '/apps/:appId/ads',
+      path: '/apps/:appId(\\d+)/ads',
       handler: 'Ad.getAdsByApp'
     },
     {
       method: 'POST',
-      path: '/apps/:appId/ads',
+      path: '/apps/:appId(\\d+)/ads',
       handler: 'Ad.batchAddAds',
       roles: ['admin']
     },
     {
       method: 'PUT',
-      path: '/ads/:adId',
+      path: '/ads/batch',
+      handler: 'Ad.batchModifyAds',
+      roles: ['admin']
+    },
+    {
+      method: 'PUT',
+      path: '/ads/:adId(\\d+)',
       handler: 'Ad.modifyAdById',
       roles: ['admin']
     },
     {
       method: 'DELETE',
-      path: '/ads/:adId',
+      path: '/ads/:adId(\\d+)',
       handler: 'Ad.deleteAdById',
       roles: ['admin']
     }

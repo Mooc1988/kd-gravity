@@ -146,6 +146,26 @@ module.exports = {
     let template = yield AdTemplate.findById(templateId)
     _.assign(template, _.omit(this.request.body))
     this.body = yield template.save()
+  },
+
+  // 批量修改广告位
+  * batchModifyAds () {
+    const {APP_TYPES} = this.config
+    let {type, userId, position, data} = this.request.body
+    assert(position, 400, '必须提供广告位')
+    assert(!_.isEmpty(data), 400, '必须提供修改数据')
+    assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
+    let {App, Ad} = this.models
+    let condition = userId ? {type, UserId: userId} : {type}
+    let apps = yield App.findAll({where: condition, attributes: ['id']})
+    let ids = _.map(apps, a => a.id)
+    console.log(ids)
+    assert(!_.isEmpty(ids), 400, '没有符合要求的app')
+    data = _.pick(data, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
+    let where = {position, AppId: {$in: ids}}
+    console.log(data, where)
+    let [affectedCount] = yield Ad.update(data, {where})
+    this.body = {affectedCount}
   }
 
 }
