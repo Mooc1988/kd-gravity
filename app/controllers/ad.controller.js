@@ -159,7 +159,6 @@ module.exports = {
     let condition = userId ? {type, UserId: userId} : {type}
     let apps = yield App.findAll({where: condition, attributes: ['id']})
     let ids = _.map(apps, a => a.id)
-    console.log(ids)
     assert(!_.isEmpty(ids), 400, '没有符合要求的app')
     data = _.pick(data, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
     let where = {position, AppId: {$in: ids}}
