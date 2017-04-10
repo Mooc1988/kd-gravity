@@ -163,11 +163,14 @@ module.exports = {
     assert(!_.isEmpty(ids), 400, '没有符合要求的app')
     data = _.pick(data, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
     let where = {position, AppId: {$in: ids}}
-    console.log(data, where)
     let [affectedCount] = yield Ad.update(data, {where})
+    let keys = _.map(ids, id => makeCacheKey(id))
+    let redis = this.redis
+    _.forEach(keys, key => {
+      redis.del(key).catch(err => console.error(err))
+    })
     this.body = {affectedCount}
   }
-
 }
 
 function makeCacheKey (appId) {
