@@ -31,9 +31,9 @@ module.exports = {
     const {APP_TYPES} = this.config
     const {user} = this.state
     const UserId = user.id
-    let {type, name} = this.request.body
+    let {type, name, subType} = this.request.body
     assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
-    let app = App.build({type, name, UserId})
+    let app = App.build({type, name, UserId, subType})
     let at = yield AdTemplate.find({where: {type, UserId}})
     assert(at, 400, '先创建广告模版才能创建APP')
     let {recommendLink, meta} = at
