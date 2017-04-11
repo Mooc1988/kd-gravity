@@ -36,6 +36,7 @@ module.exports = function (sequelize, DataTypes) {
     chartbox: {
       type: JSONB
     },
+    gdt: {type: JSONB},
     meta: {
       type: JSONB
     }

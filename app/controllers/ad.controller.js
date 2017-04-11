@@ -169,6 +169,24 @@ module.exports = {
       redis.del(key).catch(err => console.error(err))
     })
     this.body = {affectedCount}
+  },
+
+  * getPositionsOfType () {
+    let {type} = this.query
+    assert(type, 400, '必须提供App类型')
+    const {APP_TYPES} = this.config
+    assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
+    let {AdTemplate} = this.models
+    let template = yield AdTemplate.find({where: {type}})
+    let positions = []
+    if (template) {
+      let {ads} = template
+      positions = _.map(ads, ad => {
+        let {name, position} = ad
+        return {name, position}
+      })
+    }
+    this.body = positions
   }
 }
 

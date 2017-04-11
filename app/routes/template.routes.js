@@ -16,8 +16,13 @@ module.exports = {
     },
     {
       method: 'GET',
-      path: '/templates/:templateId',
+      path: '/templates/:templateId(\\d+)',
       handler: 'Ad.getTemplateById'
+    },
+    {
+      method: 'GET',
+      path: '/templates/positions',
+      handler: 'Ad.getPositionsOfType'
     },
     {
       method: 'PUT',
