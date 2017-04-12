@@ -103,60 +103,17 @@ module.exports = {
     this.status = 201
   },
 
-  * addAdTemplate () {
-    const {userId} = this.params
-    const {APP_TYPES} = this.config
-    const {type} = this.request.body
-    assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
-    const {AdTemplate, User} = this.models
-    let user = yield User.findById(userId)
-    assert(user, 400, '用户不存在')
-    let at = yield AdTemplate.find({where: {type, UserId: userId}})
-    assert(!at, 400, `该用户在[${type}] 下已经存在模版`)
-    at = AdTemplate.build(this.request.body)
-    at.UserId = userId
-    this.body = yield at.save()
-  },
-
-  * getTemplates () {
-    const {AdTemplate, User} = this.models
-    let include = [{
-      model: User,
-      attributes: ['id', 'nickname']
-    }]
-    this.body = yield AdTemplate.findAndCountAll({
-      include,
-      attributes: ['id', 'name', 'recommendLink', 'type', 'meta', 'createdAt']
-    })
-  },
-
-  * getTemplateById () {
-    const {AdTemplate, User} = this.models
-    let {templateId} = this.params
-    let include = [{
-      model: User,
-      attributes: ['id', 'nickname']
-    }]
-    this.body = yield AdTemplate.findById(templateId, {include})
-  },
-
-  * modifyTemplateById () {
-    let {AdTemplate} = this.models
-    let {templateId} = this.params
-    let template = yield AdTemplate.findById(templateId)
-    _.assign(template, _.omit(this.request.body))
-    this.body = yield template.save()
-  },
-
   // 批量修改广告位
   * batchModifyAds () {
     const {APP_TYPES} = this.config
-    let {type, userId, position, data} = this.request.body
+    let {type, UserId, position, data, version} = this.request.body
     assert(position, 400, '必须提供广告位')
+    assert(version, 400, '必须提供版本号')
+    assert(UserId, 400, '必须提供用户ID')
     assert(!_.isEmpty(data), 400, '必须提供修改数据')
     assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
     let {App, Ad} = this.models
-    let condition = userId ? {type, UserId: userId} : {type}
+    let condition = {type, version, UserId}
     let apps = yield App.findAll({where: condition, attributes: ['id']})
     let ids = _.map(apps, a => a.id)
     assert(!_.isEmpty(ids), 400, '没有符合要求的app')
@@ -169,25 +126,8 @@ module.exports = {
       redis.del(key).catch(err => console.error(err))
     })
     this.body = {affectedCount}
-  },
-
-  * getPositionsOfType () {
-    let {type} = this.query
-    assert(type, 400, '必须提供App类型')
-    const {APP_TYPES} = this.config
-    assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
-    let {AdTemplate} = this.models
-    let template = yield AdTemplate.find({where: {type}})
-    let positions = []
-    if (template) {
-      let {ads} = template
-      positions = _.map(ads, ad => {
-        let {name, position} = ad
-        return {name, position}
-      })
-    }
-    this.body = positions
   }
+
 }
 
 function makeCacheKey (appId) {

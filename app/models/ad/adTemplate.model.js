@@ -1,13 +1,15 @@
 'use strict'
 
 module.exports = function (sequelize, DataTypes) {
-  const {STRING, JSONB, ARRAY} = DataTypes
+  const {STRING, JSONB, ARRAY, INTEGER, BOOLEAN} = DataTypes
   return sequelize.define('AdTemplate', {
     // 模版名称
     name: {
       type: STRING(128),
-      allowNull: false,
-      unique: true
+      allowNull: false
+    },
+    version: {
+      type: INTEGER
     },
     recommendLink: {
       type: STRING(256)
@@ -19,6 +21,10 @@ module.exports = function (sequelize, DataTypes) {
     type: {
       type: STRING(128),
       allowNull: false
+    },
+    enable: {
+      type: BOOLEAN,
+      defaultValue: true
     },
 
     // 广告信息数组

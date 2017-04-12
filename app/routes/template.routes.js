@@ -12,27 +12,33 @@ module.exports = {
     {
       method: 'GET',
       path: '/templates',
-      handler: 'Ad.getTemplates'
+      handler: 'Template.getTemplates'
+    },
+    {
+      method: 'GET',
+      path: '/users/:userId/templates',
+      handler: 'Template.getUserTemplates'
     },
     {
       method: 'GET',
       path: '/templates/:templateId(\\d+)',
-      handler: 'Ad.getTemplateById'
+      handler: 'Template.getTemplateById'
     },
     {
       method: 'GET',
       path: '/templates/positions',
-      handler: 'Ad.getPositionsOfType'
+      handler: 'Template.getPositionsOfType'
     },
     {
       method: 'PUT',
       path: '/templates/:templateId',
-      handler: 'Ad.modifyTemplateById'
+      handler: 'Template.modifyTemplateById',
+      roles: ['admin']
     },
     {
       method: 'POST',
       path: '/users/:userId/templates',
-      handler: 'Ad.addAdTemplate',
+      handler: 'Template.addTemplate',
       roles: ['admin']
     }
   ]

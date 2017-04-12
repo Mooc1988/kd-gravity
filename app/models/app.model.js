@@ -9,6 +9,9 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       unique: true
     },
+    version: {
+      type: INTEGER
+    },
     recommendLink: {
       type: STRING(256)
     },

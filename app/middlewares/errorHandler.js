@@ -13,6 +13,7 @@ module.exports = function * (next) {
       }
     }
   } catch (err) {
+    this.app.emit('error', err, this)
     if (err.message === 'Validation error') {
       this.status = 400
       this.body = err.errors[0]
@@ -24,7 +25,6 @@ module.exports = function * (next) {
         console.error('request body: ', this.request.body)
         console.error('request header: ', this.header)
         console.error()
-        this.app.emit('error', err, this)
       }
     }
   }
