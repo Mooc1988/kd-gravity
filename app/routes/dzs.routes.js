@@ -1,9 +1,6 @@
 /**
  * Created by frank on 2017/3/21.
  */
-/**
- * Created by frank on 2017/3/12.
- */
 
 module.exports = {
   ready: true,
@@ -13,6 +10,11 @@ module.exports = {
       method: 'GET',
       path: '/books',
       handler: 'Dzs.findBooks'
+    },
+    {
+      method: 'POST',
+      path: '/books',
+      handler: 'Dzs.addBook'
     },
     {
       method: 'GET',

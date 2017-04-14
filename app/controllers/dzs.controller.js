@@ -18,11 +18,17 @@ module.exports = {
   },
   // 添加书籍
   * addBook () {
-    let {DzsBook} = this.models
-    let {name} = this.request.body
-    let book = yield DzsBook.find({where: {name}})
-    assert(!book, 400, '书籍已经存在')
+    let {DzsBook, DzsCategory} = this.models
+    let {title, uid, categoryId} = this.request.body
+    let book = yield DzsBook.find({where: {$or: [{title}, {uid}]}})
+    assert(!book, 400, '名称或uid重复')
+    let category = yield DzsCategory.findById(categoryId, {attributes: ['name']})
+    assert(category, 400, '分类不存在')
     book = DzsBook.build(this.request.body)
+    book.DzsCategoryId = categoryId
+    book.tags = [category.name]
+    book.coverImage = `https://book.hizuoye.com/books/${uid}/cover.jpg`
+    book.state = 1
     this.body = yield book.save()
   },
 
@@ -46,7 +52,7 @@ module.exports = {
         return DzsSearchWord.create({keyword})
       })
     }
-    const cond = {where, offset, limit}
+    const cond = {where, offset, limit, order: [['id', 'DESC']]}
     this.body = yield DzsBook.findAndCountAll(cond)
   },
 
@@ -77,17 +83,21 @@ module.exports = {
   * findCategoriesWithPreview () {
     let cacheKey = 'category:preview'
     let {redis} = this
-    let {DzsCategory} = this.models
+    let {DzsCategory, DzsBook} = this.models
     let categories = yield DzsCategory.findAll()
-    let data
     try {
-      data = yield redis.hgetall(cacheKey)
-      _.forEach(categories, c => {
-        let previews = data[c.id]
+      let data = yield redis.hgetall(cacheKey)
+      for (let cate of categories) {
+        let previews = data[cate.id]
         if (previews) {
-          c.previews = JSON.parse(previews)
+          cate.previews = JSON.parse(previews)
+        } else {
+          let books = yield DzsBook.findAll({where: {id: {$in: cate.previews}}})
+          books = _.sortBy(books, b => cate.previews.indexOf(b.id))
+          cate.previews = books
+          redis.hset(cacheKey, cate.id, JSON.stringify(books))
         }
-      })
+      }
     } catch (err) {
       console.log(err)
     }
@@ -263,9 +273,10 @@ module.exports = {
     assert(top, 400, '榜单不存在')
     let {books} = top
     if (!_.isEmpty(books)) {
-      books = _.sampleSize(books, 20)
       let attributes = ['id', 'title', 'coverImage', 'author', 'brief', 'uid']
-      top.books = yield DzsBook.findAll({where: {id: {$in: books}}, attributes})
+      let bs = yield DzsBook.findAll({where: {id: {$in: books}}, attributes})
+      bs = _.sortBy(bs, b => books.indexOf(b.id))
+      top.books = bs
     }
     this.body = top
   },
