@@ -70,7 +70,7 @@ module.exports = {
       method: 'PUT',
       path: '/books/:bookId(\\d+)',
       handler: 'Dzs.modifyBookById',
-      roles: ['admin']
+      roles: ['admin', 'publisher']
     },
     {
       method: 'POST',
