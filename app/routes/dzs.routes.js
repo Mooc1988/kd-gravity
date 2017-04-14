@@ -35,6 +35,22 @@ module.exports = {
       handler: 'Dzs.findCategories'
     },
     {
+      method: 'GET',
+      path: '/categoriesWithPreviews',
+      handler: 'Dzs.findCategoriesWithPreview'
+    },
+    {
+      method: 'GET',
+      path: '/categories/:categoryId',
+      handler: 'Dzs.findCategoryById'
+    },
+    {
+      method: 'PUT',
+      path: '/categories/:categoryId',
+      handler: 'Dzs.modifyCategoryById',
+      roles: ['admin']
+    },
+    {
       method: 'POST',
       path: '/apps/:appId(\\d+)/books',
       handler: 'Dzs.addToApp',
@@ -48,7 +64,58 @@ module.exports = {
     {
       method: 'PUT',
       path: '/books/:bookId(\\d+)',
-      handler: 'Dzs.modifyBookById'
-    }
+      handler: 'Dzs.modifyBookById',
+      roles: ['admin']
+    },
+    {
+      method: 'POST',
+      path: '/banners',
+      handler: 'Dzs.addBanner',
+      roles: ['admin']
+    },
+    {
+      method: 'PUT',
+      path: '/banners/:bannerId',
+      handler: 'Dzs.modifyBanner',
+      roles: ['admin']
+    },
+    {
+      method: 'DELETE',
+      path: '/banners/:bannerId',
+      handler: 'Dzs.removeBannerById',
+      roles: ['admin']
+    },
+    {
+      method: 'GET',
+      path: '/banners',
+      handler: 'Dzs.findBanners'
+    },
+    {
+      method: 'POST',
+      path: '/tops',
+      handler: 'Dzs.createTop',
+      roles: ['admin']
+    },
+    {
+      method: 'PUT',
+      path: '/tops/:topId',
+      handler: 'Dzs.modifyTopById',
+      roles: ['admin']
+    },
+    {
+      method: 'GET',
+      path: '/tops/:topId',
+      handler: 'Dzs.getTopById'
+    },
+    {
+      method: 'GET',
+      path: '/tops/all',
+      handler: 'Dzs.findAllTops'
+    },
+    {
+      method: 'GET',
+      path: '/tops',
+      handler: 'Dzs.getTopsByIds'
+    },
   ]
 }

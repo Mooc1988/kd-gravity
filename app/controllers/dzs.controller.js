@@ -2,6 +2,7 @@
  * Created by frank on 2017/3/20.
  */
 const _ = require('lodash')
+const sequelize = require('sequelize')
 const assert = require('http-assert')
 
 const LIMIT = 30
@@ -52,6 +53,63 @@ module.exports = {
   * findCategories () {
     let {DzsCategory} = this.models
     this.body = yield DzsCategory.findAll()
+  },
+
+  * findCategoryById () {
+    let cacheKey = 'category:preview'
+    let {DzsCategory} = this.models
+    let {categoryId} = this.params
+    let cate = yield DzsCategory.findById(categoryId)
+    assert(cate, 400, '分类不存在')
+    let previews = yield this.redis.hget(cacheKey, categoryId)
+    if (previews) {
+      cate.previews = JSON.parse(previews)
+    }
+    this.body = cate
+  },
+
+  * findCategoriesWithPreview () {
+    let cacheKey = 'category:preview'
+    let {redis} = this
+    let {DzsCategory} = this.models
+    let categories = yield DzsCategory.findAll()
+    let data
+    try {
+      data = yield redis.hgetall(cacheKey)
+      _.forEach(categories, c => {
+        let previews = data[c.id]
+        if (previews) {
+          c.previews = JSON.parse(previews)
+        }
+      })
+    } catch (err) {
+      console.log(err)
+    }
+    this.body = categories
+  },
+
+  * modifyCategoryById () {
+    let cacheKey = 'category:preview'
+    let {DzsCategory, DzsBook} = this.models
+    let {redis} = this
+    let {categoryId} = this.params
+    let cate = yield DzsCategory.findById(categoryId)
+    assert(cate, 400, '分类不存在')
+    _.assign(cate, this.request.body)
+    let {previews} = this.request.body
+    if (!_.isEmpty(previews)) {
+      let books = yield DzsBook.findAll({
+        where: {id: {$in: previews}},
+        attributes: ['id', 'uid', 'title', 'author', 'brief', 'coverImage']
+      })
+      try {
+        let cacheData = JSON.stringify(books)
+        yield redis.hset(cacheKey, categoryId, cacheData)
+      } catch (err) {
+        console.err(err)
+      }
+    }
+    this.body = yield cate.save()
   },
 
   * findBooksByCategory () {
@@ -139,6 +197,92 @@ module.exports = {
       }
       this.body = books
     }
+  },
+
+  * addBanner () {
+    let {DzsBanner} = this.models
+    let banner = DzsBanner.build(this.request.body)
+    this.body = yield banner.save()
+  },
+
+  * modifyBanner () {
+    let {DzsBanner} = this.models
+    let {bannerId} = this.params
+    let banner = yield DzsBanner.findById(bannerId)
+    assert(banner, 400, 'banner不存在')
+    _.assign(banner, this.request.body)
+    this.body = yield banner.save()
+  },
+
+  * removeBannerById () {
+    let {DzsBanner} = this.models
+    let {bannerId} = this.params
+    let banner = yield DzsBanner.findById(bannerId)
+    assert(banner, 400, 'banner不存在')
+    yield banner.destroy()
+    this.status = 201
+  },
+
+  * findBanners () {
+    let {DzsBanner} = this.models
+    this.body = yield DzsBanner.findAll({
+      order: [sequelize.fn('random')],
+      limit: 4
+    })
+  },
+
+  // 创建榜单
+  * createTop () {
+    let {DzsTop} = this.models
+    let top = DzsTop.build(this.request.body)
+    this.body = yield top.save()
+  },
+
+  // 修改榜单信息
+  * modifyTopById () {
+    let {DzsTop} = this.models
+    let {topId} = this.params
+    let top = yield DzsTop.findById(topId)
+    assert(top, 400, '榜单不存在')
+    _.assign(top, this.request.body)
+    this.body = yield top.save()
+  },
+
+  // 获取榜单信息
+  * getTopById () {
+    let {DzsTop, DzsBook} = this.models
+    let {topId} = this.params
+    let top = yield DzsTop.findById(topId)
+    assert(top, 400, '榜单不存在')
+    let {books} = top
+    if (!_.isEmpty(books)) {
+      books = _.sampleSize(books, 20)
+      let attributes = ['id', 'title', 'coverImage', 'author', 'brief', 'uid']
+      top.books = yield DzsBook.findAll({where: {id: {$in: books}}, attributes})
+    }
+    this.body = top
+  },
+
+  // 获取所有榜单
+  * findAllTops () {
+    let {DzsTop} = this.models
+    this.body = yield DzsTop.findAll()
+  },
+
+  * getTopsByIds () {
+    let {ids} = this.query
+    assert(ids, 400, '必须提供ids')
+    ids = _.map(ids.split(','), id => parseInt(id))
+    let {DzsTop, DzsBook} = this.models
+    let tops = yield DzsTop.findAll({where: {id: {$in: ids}}})
+    for (let top of tops) {
+      top = top.toJSON()
+      let books = _.sampleSize(top.books, 4)
+      delete top['books']
+      let attributes = ['id', 'title', 'coverImage', 'author', 'brief', 'uid']
+      top.previews = yield DzsBook.findAll({where: {id: {$in: books}}, attributes})
+    }
+    this.body = tops
   }
 }
 

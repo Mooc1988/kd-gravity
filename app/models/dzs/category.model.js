@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = function (sequelize) {
-  const {STRING, BOOLEAN} = sequelize.Sequelize
+  const {STRING, BOOLEAN, ARRAY, INTEGER} = sequelize.Sequelize
   return sequelize.define('DzsCategory', {
     // 名称
     name: {
@@ -13,6 +13,10 @@ module.exports = function (sequelize) {
     enable: {
       type: BOOLEAN,
       defaultValue: true
+    },
+    // 每个分类的精选书籍
+    previews: {
+      type: ARRAY(INTEGER)
     }
   }, {
     classMethods: {
