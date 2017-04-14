@@ -16,6 +16,11 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/books/:bookId',
+      handler: 'Dzs.findBookById'
+    },
+    {
+      method: 'GET',
       path: '/books/hot',
       handler: 'Dzs.topN'
     },

@@ -50,6 +50,12 @@ module.exports = {
     this.body = yield DzsBook.findAndCountAll(cond)
   },
 
+  * findBookById () {
+    let {DzsBook} = this.models
+    let {bookId} = this.params
+    this.body = yield DzsBook.findById(bookId)
+  },
+
   * findCategories () {
     let {DzsCategory} = this.models
     this.body = yield DzsCategory.findAll()
@@ -102,6 +108,7 @@ module.exports = {
         where: {id: {$in: previews}},
         attributes: ['id', 'uid', 'title', 'author', 'brief', 'coverImage']
       })
+      books = _.sortBy(books, b => previews.indexOf(b.id))
       try {
         let cacheData = JSON.stringify(books)
         yield redis.hset(cacheKey, categoryId, cacheData)
