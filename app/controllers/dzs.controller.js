@@ -52,7 +52,7 @@ module.exports = {
         return DzsSearchWord.create({keyword})
       })
     }
-    const cond = {where, offset, limit, order: [['id', 'DESC']]}
+    const cond = {where, offset, limit}
     this.body = yield DzsBook.findAndCountAll(cond)
   },
 
