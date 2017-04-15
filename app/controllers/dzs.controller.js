@@ -147,8 +147,15 @@ module.exports = {
     let {bookId} = this.params
     let book = yield DzsBook.findById(bookId)
     assert(book, 400, '图书不存在或已删除')
+    let cacheKey = 'category:preview'
     _.assign(book, this.request.body)
-    this.body = yield book.save()
+    yield book.save()
+    try {
+      yield this.redis.hdel(cacheKey, book.DzsCategoryId)
+    } catch (err) {
+      console.error(err)
+    }
+    this.body = book
   },
 
   // 添加进书架
