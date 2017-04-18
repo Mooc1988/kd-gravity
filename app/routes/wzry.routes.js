@@ -13,8 +13,18 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/heroes/:heroId/page',
+      handler: 'Wzry.getHeroPage'
+    },
+    {
+      method: 'GET',
       path: '/equipments',
       handler: 'Wzry.findEquipments'
+    },
+    {
+      method: 'GET',
+      path: '/equipments/:equipId/page',
+      handler: 'Wzry.getEquipPage'
     },
     {
       method: 'GET',
