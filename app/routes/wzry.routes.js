@@ -18,6 +18,11 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/posts/:postId/page',
+      handler: 'Wzry.getPostPage'
+    },
+    {
+      method: 'GET',
       path: '/equipments',
       handler: 'Wzry.findEquipments'
     },

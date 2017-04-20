@@ -17,6 +17,29 @@ module.exports = {
     this.body = ['全部', '攻击', '法术', '防御', '移动', '打野']
   },
 
+  * findPostCategories () {
+    this.body = [{id: 1, title: '最新资讯'}, {id: 2, title: '攻略秘籍'}, {id: 3, 'title': '英雄图鉴'}]
+  },
+
+  * getPostPage () {
+    let {postId} = this.params
+    let {WzryPost} = this.models
+    let cacheKey = `wzry:post:${postId}`
+    let data = yield this.redis.get(cacheKey)
+    if (!data) {
+      let post = yield WzryPost.findById(postId)
+      let {link, source} = post
+      assert(post, 400, 'post不存在')
+      if (source === 'ptbus') {
+        data = yield fetchPtbusPage(link)
+      } else if (source === '72g') {
+        data = yield fetch72gPage(link)
+      }
+      yield this.redis.set(cacheKey, data)
+    }
+    this.body = data
+  },
+
   * findHeroes () {
     let {WzryHero} = this.models
     this.body = yield WzryHero.findAll({})
@@ -73,6 +96,78 @@ function fetchHeroOrEquipPage (uri) {
           $(d).remove()
         }
       })
+      let result = minify($.html(), {
+        removeComments: true,
+        removeCommentsFromCDATA: true,
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true
+      })
+      resolve(result)
+    })
+  })
+}
+
+function fetchPtbusPage (uri) {
+  return new Promise(function (resolve, reject) {
+    request.get(uri, function (err, res, body) {
+      if (err) {
+        return reject(err)
+      }
+      let $ = cheerio.load(body)
+      $('script').remove()
+      _.forEach($('body').children(), (e) => {
+        if (e.name !== 'article') {
+          $(e).remove()
+        }
+      })
+      let result = minify($.html(), {
+        removeComments: true,
+        removeCommentsFromCDATA: true,
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true
+      })
+      resolve(result)
+    })
+  })
+}
+
+function fetch72gPage (uri) {
+  const converterStream = iconv.decodeStream('GBK')
+  request.get({uri, encoding: null}).pipe(converterStream)
+  return new Promise(function (resolve, reject) {
+    converterStream.collect(function (err, body) {
+      if (err) {
+        return reject(err)
+      }
+      let $ = cheerio.load(body)
+      $('script').remove()
+      _.forEach($('head').children('link'), (e) => {
+        let link = $(e)
+        let href = link.attr('href')
+        if (href.startsWith('/')) {
+          link.attr('href', `http://m.72g.com${href}`)
+        }
+      })
+      _.forEach($('.wrapper').children(), (e) => {
+        let section = $(e)
+        if (section.attr('role') !== 'mode-game-infomation') {
+          section.remove()
+        } else {
+          _.forEach(section.children(), (e) => {
+            let inner = $(e)
+            if (!inner.hasClass('game-article')) {
+              inner.remove()
+            } else {
+              inner.find('table').remove()
+            }
+          })
+        }
+      })
+      // css.attr('href', 'http://http://www.72g.com/' + css.attr('href'))
       let result = minify($.html(), {
         removeComments: true,
         removeCommentsFromCDATA: true,

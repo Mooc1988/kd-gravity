@@ -1,7 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
-module.exports = function (sequelize, DataTypes) {
+module.exports = function (sequelize) {
   const {STRING, BOOLEAN, ARRAY, JSONB} = sequelize.Sequelize
   return sequelize.define('Ad', {
     // 名称
