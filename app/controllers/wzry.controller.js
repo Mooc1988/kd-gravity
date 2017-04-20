@@ -7,6 +7,7 @@ const request = require('request')
 const cheerio = require('cheerio')
 const iconv = require('iconv-lite')
 const minify = require('html-minifier').minify
+const LIMIT = 30
 
 module.exports = {
   * findHeroTags () {
@@ -19,6 +20,14 @@ module.exports = {
 
   * findPostCategories () {
     this.body = [{id: 1, title: '最新资讯'}, {id: 2, title: '攻略秘籍'}, {id: 3, 'title': '英雄图鉴'}]
+  },
+
+  * findPostsByCategory () {
+    let {categoryId} = this.params
+    let {WzryPost} = this.models
+    let {offset, limit} = getPage(this.query)
+    let cond = {where: {category: categoryId}, offset, limit}
+    this.body = yield WzryPost.findAndCountAll(cond)
   },
 
   * getPostPage () {
@@ -179,4 +188,9 @@ function fetch72gPage (uri) {
       resolve(result)
     })
   })
+}
+function getPage (query) {
+  const page = _.get(query, 'page', 1)
+  const offset = (page - 1) * LIMIT
+  return {offset, limit: LIMIT}
 }
