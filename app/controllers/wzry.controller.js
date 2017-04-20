@@ -26,7 +26,7 @@ module.exports = {
     let {categoryId} = this.params
     let {WzryPost} = this.models
     let {offset, limit} = getPage(this.query)
-    let cond = {where: {category: categoryId}, offset, limit}
+    let cond = {where: {category: categoryId}, offset, limit, order: [['createdAt', 'DESC']]}
     this.body = yield WzryPost.findAndCountAll(cond)
   },
 
