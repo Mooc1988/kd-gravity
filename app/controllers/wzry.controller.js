@@ -22,6 +22,22 @@ module.exports = {
     this.body = [{id: 1, title: '最新资讯'}, {id: 2, title: '攻略秘籍'}, {id: 3, 'title': '英雄图鉴'}]
   },
 
+  * findTools () {
+    this.body = [{
+      title: '符文模拟器',
+      image: 'https://book.hizuoye.com/images/wzry/fuwen.png',
+      link: 'http://www.diyiyou.com/gameweb/3v3/moniqi'
+    }, {
+      title: '出装模拟器',
+      image: 'https://book.hizuoye.com/images/wzry/equment.png',
+      link: 'http://m.18183.com/yxzjol/xiaoshimei/yx.html'
+    }, {
+      title: '英雄排气表',
+      image: 'https://book.hizuoye.com/images/wzry/hero.png',
+      link: 'http://m.18183.com/yxzjol/201607/650642.html'
+    }]
+  },
+
   * findPostsByCategory () {
     let {categoryId} = this.params
     let {WzryPost} = this.models
@@ -182,7 +198,6 @@ function fetch72gPage (uri) {
           })
         }
       })
-      // css.attr('href', 'http://http://www.72g.com/' + css.attr('href'))
       let result = minify($.html(), {
         removeComments: true,
         removeCommentsFromCDATA: true,
@@ -195,6 +210,7 @@ function fetch72gPage (uri) {
     })
   })
 }
+
 function getPage (query) {
   const page = _.get(query, 'page', 1)
   const offset = (page - 1) * LIMIT

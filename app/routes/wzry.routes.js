@@ -8,6 +8,11 @@ module.exports = {
   routes: [
     {
       method: 'GET',
+      path: '/tools',
+      handler: 'Wzry.findTools'
+    },
+    {
+      method: 'GET',
       path: '/heroes',
       handler: 'Wzry.findHeroes'
     },
