@@ -68,7 +68,7 @@ module.exports = {
       }
       yield this.redis.set(cacheKey, data)
     }
-    this.body = data
+    this.body = {html: data}
   },
 
   * findHeroes () {
@@ -93,7 +93,7 @@ module.exports = {
       data = yield fetchHeroOrEquipPage(link)
       yield this.redis.set(cacheKey, data)
     }
-    this.body = data
+    this.body = {html: data}
   },
 
   * getEquipPage () {
@@ -108,7 +108,7 @@ module.exports = {
       data = yield fetchHeroOrEquipPage(link)
       yield this.redis.set(cacheKey, data)
     }
-    this.body = data
+    this.body = {html: data}
   }
 }
 
