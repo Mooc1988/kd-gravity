@@ -3,6 +3,7 @@
  */
 const _ = require('lodash')
 const assert = require('http-assert')
+const sequelize = require('sequelize')
 const LIMIT = 30
 module.exports = {
 
@@ -119,6 +120,90 @@ module.exports = {
     let album = yield YssAlbum.findById(albumId)
     assert(album, 400, '专辑不存在')
     this.body = yield album.update({title})
+  },
+  // 创建榜单
+  * createTop () {
+    let {YssTop} = this.models
+    let top = YssTop.build(this.request.body)
+    this.body = yield top.save()
+  },
+
+  // 修改榜单信息
+  * modifyTopById () {
+    let {YssTop} = this.models
+    let {topId} = this.params
+    let top = yield YssTop.findById(topId)
+    assert(top, 400, '榜单不存在')
+    _.assign(top, this.request.body)
+    this.body = yield top.save()
+  },
+
+  // 获取榜单信息
+  * getTopById () {
+    let {YssTop, YssAlbum} = this.models
+    let {topId} = this.params
+    let top = yield YssTop.findById(topId)
+    assert(top, 400, '榜单不存在')
+    let {albums} = top
+    if (!_.isEmpty(albums)) {
+      let bs = yield YssAlbum.findAll({where: {id: {$in: albums}}})
+      bs = _.sortBy(bs, b => albums.indexOf(b.id))
+      top.albums = bs
+    }
+    this.body = top
+  },
+
+  // 获取所有榜单
+  * findAllTops () {
+    let {YssTop} = this.models
+    this.body = yield YssTop.findAll()
+  },
+
+  * getTopsByIds () {
+    let {ids} = this.query
+    assert(ids, 400, '必须提供ids')
+    ids = _.map(ids.split(','), id => parseInt(id))
+    let {YssTop, YssAlbum} = this.models
+    let tops = yield YssTop.findAll({where: {id: {$in: ids}}})
+    for (let top of tops) {
+      top = top.toJSON()
+      let ids = _.sampleSize(top.albums, 4)
+      delete top['albums']
+      top.previews = yield YssAlbum.findAll({where: {id: {$in: ids}}})
+    }
+    this.body = tops
+  },
+
+  * addBanner () {
+    let {YssBanner} = this.models
+    let banner = YssBanner.build(this.request.body)
+    this.body = yield banner.save()
+  },
+
+  * modifyBanner () {
+    let {YssBanner} = this.models
+    let {bannerId} = this.params
+    let banner = yield YssBanner.findById(bannerId)
+    assert(banner, 400, 'banner不存在')
+    _.assign(banner, this.request.body)
+    this.body = yield banner.save()
+  },
+
+  * removeBannerById () {
+    let {YssBanner} = this.models
+    let {bannerId} = this.params
+    let banner = yield YssBanner.findById(bannerId)
+    assert(banner, 400, 'banner不存在')
+    yield banner.destroy()
+    this.status = 201
+  },
+
+  * findBanners () {
+    let {YssBanner} = this.models
+    this.body = yield YssBanner.findAll({
+      order: [sequelize.fn('random')],
+      limit: 4
+    })
   }
 }
 

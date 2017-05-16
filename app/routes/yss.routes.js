@@ -55,6 +55,56 @@ module.exports = {
       method: 'DELETE',
       path: '/apps/:appId(\\d+)/albums/:albumId(\\d+)',
       handler: 'Yss.removeFromApp'
+    },
+    {
+      method: 'POST',
+      path: '/banners',
+      handler: 'Yss.addBanner',
+      roles: ['admin']
+    },
+    {
+      method: 'PUT',
+      path: '/banners/:bannerId',
+      handler: 'Yss.modifyBanner',
+      roles: ['admin']
+    },
+    {
+      method: 'DELETE',
+      path: '/banners/:bannerId',
+      handler: 'Yss.removeBannerById',
+      roles: ['admin']
+    },
+    {
+      method: 'GET',
+      path: '/banners',
+      handler: 'Yss.findBanners'
+    },
+    {
+      method: 'POST',
+      path: '/tops',
+      handler: 'Yss.createTop',
+      roles: ['admin']
+    },
+    {
+      method: 'PUT',
+      path: '/tops/:topId',
+      handler: 'Yss.modifyTopById',
+      roles: ['admin']
+    },
+    {
+      method: 'GET',
+      path: '/tops/:topId',
+      handler: 'Yss.getTopById'
+    },
+    {
+      method: 'GET',
+      path: '/tops/all',
+      handler: 'Yss.findAllTops'
+    },
+    {
+      method: 'GET',
+      path: '/tops',
+      handler: 'Yss.getTopsByIds'
     }
   ]
 }

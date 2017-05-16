@@ -123,6 +123,6 @@ module.exports = {
       method: 'GET',
       path: '/tops',
       handler: 'Dzs.getTopsByIds'
-    },
+    }
   ]
 }
