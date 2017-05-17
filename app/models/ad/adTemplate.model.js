@@ -22,6 +22,9 @@ module.exports = function (sequelize, DataTypes) {
       type: STRING(128),
       allowNull: false
     },
+    subType: {
+      type: STRING(128)
+    },
     enable: {
       type: BOOLEAN,
       defaultValue: true
@@ -33,6 +36,11 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false
     }
   }, {
+    defaultScope: {
+      where: {
+        enable: true
+      }
+    },
     classMethods: {
       associate ({AdTemplate, User}) {
         AdTemplate.belongsTo(User)

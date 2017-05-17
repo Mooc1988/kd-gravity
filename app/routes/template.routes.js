@@ -1,45 +1,51 @@
 /**
- * Created by frank on 2017/4/7.
- */
-/**
  * Created by frank on 2017/3/9.
  */
 
 module.exports = {
   ready: true,
-  prefix: '/api',
+  prefix: '/api/templates',
   routes: [
     {
       method: 'GET',
-      path: '/templates',
-      handler: 'Template.getTemplates'
-    },
-    {
-      method: 'GET',
-      path: '/users/:userId/templates',
-      handler: 'Template.getUserTemplates'
-    },
-    {
-      method: 'GET',
-      path: '/templates/:templateId(\\d+)',
-      handler: 'Template.getTemplateById'
-    },
-    {
-      method: 'GET',
-      path: '/templates/positions',
-      handler: 'Template.getPositionsOfType'
-    },
-    {
-      method: 'PUT',
-      path: '/templates/:templateId',
-      handler: 'Template.modifyTemplateById',
+      path: '/',
+      handler: 'Template.getTemplates',
       roles: ['admin']
     },
     {
       method: 'POST',
-      path: '/users/:userId/templates',
+      path: '/',
       handler: 'Template.addTemplate',
       roles: ['admin']
+    },
+    {
+      method: 'GET',
+      path: '/user',
+      handler: 'Template.getUserTemplates',
+      roles: ['admin']
+    },
+    {
+      method: 'GET',
+      path: '/:templateId(\\d+)',
+      handler: 'Template.getTemplateById',
+      roles: ['publisher', 'admin']
+    },
+    {
+      method: 'PUT',
+      path: '/:templateId',
+      handler: 'Template.modifyTemplateById',
+      roles: ['admin']
+    },
+    {
+      method: 'PUT',
+      path: '/:templateId/upgrade',
+      handler: 'Template.upgradeTemplateById',
+      roles: ['admin']
+    },
+    {
+      method: 'GET',
+      path: '/subTypes',
+      handler: 'Template.getSubTypes'
     }
   ]
 }

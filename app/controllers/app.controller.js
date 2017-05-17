@@ -24,28 +24,25 @@ module.exports = {
     const cond = {include, order, offset, limit, where}
     this.body = yield App.findAndCountAll(cond)
   },
-
   // 创建APP信息,并且根据广告模版自动填充广告
   * create () {
     const {App, AdTemplate, Ad} = this.models
-    const {APP_TYPES} = this.config
     const {user} = this.state
     const UserId = user.id
     let {type, name, subType} = this.request.body
-    assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
+    if (type === '游戏') {
+      assert(subType, 400, '游戏类型必须填写子类型')
+    }
+    let where = {type, UserId}
+    if (subType) {
+      where.subType = subType
+    }
+    let template = yield AdTemplate.findOne({where})
+    assert(template, 400, '先创建广告模版')
     let app = App.build({type, name, UserId, subType})
-    let at = yield AdTemplate.find({where: {type, UserId, enable: true}})
-    assert(at, 400, '先创建广告模版才能创建APP')
-    let {recommendLink, meta, version} = at
-    app.version = version
-    if (recommendLink) {
-      app.recommendLink = recommendLink
-    }
-    if (meta) {
-      app.meta = meta
-    }
+    _.assign(app, _.pick(template, ['recommendLink', 'meta', 'version']))
     app = yield app.save()
-    let {ads} = at
+    let {ads} = template
     _.forEach(ads, ad => { ad.AppId = app.id })
     yield Ad.bulkCreate(ads)
     ads = yield app.getAds({attributes: {exclude: ['UserId', 'AppId']}})

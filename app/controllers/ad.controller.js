@@ -105,21 +105,22 @@ module.exports = {
 
   // 批量修改广告位
   * batchModifyAds () {
-    const {APP_TYPES} = this.config
-    let {type, UserId, position, data, version} = this.request.body
+    let {type, subType, UserId, position, ad, version} = this.request.body
     assert(position, 400, '必须提供广告位')
     assert(version, 400, '必须提供版本号')
     assert(UserId, 400, '必须提供用户ID')
-    assert(!_.isEmpty(data), 400, '必须提供修改数据')
-    assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
+    assert(!_.isEmpty(ad), 400, '必须提供修改数据')
     let {App, Ad} = this.models
     let condition = {type, version, UserId}
+    if (subType) {
+      condition.subType = subType
+    }
     let apps = yield App.findAll({where: condition, attributes: ['id']})
     let ids = _.map(apps, a => a.id)
     assert(!_.isEmpty(ids), 400, '没有符合要求的app')
-    data = _.pick(data, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
+    ad = _.pick(ad, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
     let where = {position, AppId: {$in: ids}}
-    let [affectedCount] = yield Ad.update(data, {where})
+    let [affectedCount] = yield Ad.update(ad, {where})
     let keys = _.map(ids, id => makeCacheKey(id))
     let redis = this.redis
     _.forEach(keys, key => {
