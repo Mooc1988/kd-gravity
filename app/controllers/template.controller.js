@@ -53,11 +53,15 @@ module.exports = {
     let {templateId} = this.params
     let template = yield AdTemplate.findById(templateId)
     assert(template, 400, '模版不存在')
-    let {version, type, UserId} = template
+    let {version, type, UserId, subType} = template
     let data = template.toJSON()
     let newTemplate = AdTemplate.build(_.omit(data, 'id'))
     let newVersion = version + 1
-    let count = yield AdTemplate.count({where: {type, UserId, version: newVersion}})
+    let where = {type, UserId, version: newVersion}
+    if (subType) {
+      where.subType = subType
+    }
+    let count = yield AdTemplate.count({where})
     assert(count === 0, 400, '该模版已经升级')
     newTemplate.version = newVersion
     newTemplate.enable = true
