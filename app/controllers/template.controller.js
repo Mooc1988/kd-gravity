@@ -7,7 +7,6 @@ const LIMIT = 30
 
 module.exports = {
   * addTemplate () {
-    const {user} = this.state
     const {APP_TYPES} = this.config
     const {AdTemplate} = this.models
     const {name, type, subType, UserId} = this.request.body
@@ -15,7 +14,7 @@ module.exports = {
     assert(count === 0, 400, '模版名称已存在')
     assert(UserId, 400, '缺少UserId')
     assert(_.indexOf(APP_TYPES, type) >= 0, 400, `支持的APP类型:[ ${APP_TYPES} ]`)
-    let where = {UserId: user.id, type}
+    let where = {UserId, type}
     if (type === '游戏') {
       assert(subType, 400, '游戏类型APP模版需要自类型')
       where.subType = subType
@@ -23,7 +22,6 @@ module.exports = {
     count = yield AdTemplate.count({where})
     assert(count === 0, 400, '该类型模版已经存在')
     let at = AdTemplate.build(this.request.body)
-    at.UserId = user.id
     this.body = yield at.save()
   },
 
