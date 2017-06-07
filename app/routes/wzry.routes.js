@@ -43,6 +43,16 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/pages/chuzhuang',
+      handler: 'Wzry.getChuzhuangPage'
+    },
+    {
+      method: 'GET',
+      path: '/pages/paiqi',
+      handler: 'Wzry.getPaiqiPage'
+    },
+    {
+      method: 'GET',
       path: '/equipments/:equipId/page',
       handler: 'Wzry.getEquipPage'
     },

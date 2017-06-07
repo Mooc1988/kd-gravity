@@ -30,11 +30,11 @@ module.exports = {
     }, {
       title: '出装模拟器',
       image: 'https://book.hizuoye.com/images/wzry/equment.png',
-      link: 'http://m.18183.com/yxzjol/xiaoshimei/yx.html'
+      link: 'https://gravity.hizuoye.com/api/wzry/pages/chuzhuang'
     }, {
-      title: '英雄排气表',
+      title: '英雄排期表',
       image: 'https://book.hizuoye.com/images/wzry/hero.png',
-      link: 'http://m.18183.com/yxzjol/201607/650642.html'
+      link: 'https://gravity.hizuoye.com/api/wzry/pages/paiqi'
     }]
   },
 
@@ -109,6 +109,15 @@ module.exports = {
       yield this.redis.set(cacheKey, data)
     }
     this.body = {html: data}
+  },
+  * getChuzhuangPage () {
+    const url = 'http://m.18183.com/yxzjol/xiaoshimei/yx.html'
+    this.body = yield fetchChuZhuang(url)
+  },
+
+  * getPaiqiPage () {
+    const url = 'http://m.18183.com/yxzjol/201607/650642.html'
+    this.body = yield fetchPaiqi(url)
   }
 }
 
@@ -198,6 +207,63 @@ function fetch72gPage (uri) {
           })
         }
       })
+      let result = minify($.html(), {
+        removeComments: true,
+        removeCommentsFromCDATA: true,
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true
+      })
+      resolve(result)
+    })
+  })
+}
+
+// 出装模拟器页面
+function fetchChuZhuang (url) {
+  return new Promise(function (resolve, reject) {
+    request.get(url, function (err, res, body) {
+      if (err) {
+        return reject(err)
+      }
+      let $ = cheerio.load(body)
+      $('header').remove()
+      $('nav').remove()
+      $('section.re-mod').remove()
+      $('.footer').remove()
+      $('.mod_download_sup').remove()
+      let result = minify($.html(), {
+        removeComments: true,
+        removeCommentsFromCDATA: true,
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true
+      })
+      resolve(result)
+    })
+  })
+}
+
+// 英雄排期页面
+function fetchPaiqi (url) {
+  return new Promise(function (resolve, reject) {
+    request.get(url, function (err, res, body) {
+      if (err) {
+        return reject(err)
+      }
+      let $ = cheerio.load(body)
+      $('header').remove()
+      $('nav').remove()
+      $('.m-gift-pack').remove()
+      $('body > article > section:nth-child(2)').remove()
+      $('#m-cwb-wzry-mobile').remove()
+      $('.writer').remove()
+      $('body > article > section > h1').text('王者荣耀英雄皮肤上线排期表')
+      $('section.re-mod').remove()
+      $('.footer').remove()
+      $('.mod_download_sup').remove()
       let result = minify($.html(), {
         removeComments: true,
         removeCommentsFromCDATA: true,
