@@ -30,11 +30,11 @@ module.exports = {
     }, {
       title: '出装模拟器',
       image: 'https://book.hizuoye.com/images/wzry/equment.png',
-      link: 'https://gravity.hizuoye.com/api/wzry/pages/chuzhuang'
+      link: 'http://gravity.hizuoye.com/api/wzry/pages/chuzhuang'
     }, {
       title: '英雄排期表',
       image: 'https://book.hizuoye.com/images/wzry/hero.png',
-      link: 'https://gravity.hizuoye.com/api/wzry/pages/paiqi'
+      link: 'http://gravity.hizuoye.com/api/wzry/pages/paiqi'
     }]
   },
 
