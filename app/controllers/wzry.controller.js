@@ -111,13 +111,25 @@ module.exports = {
     this.body = {html: data}
   },
   * getChuzhuangPage () {
-    const url = 'http://m.18183.com/yxzjol/xiaoshimei/yx.html'
-    this.body = yield fetchChuZhuang(url)
+    const url = 'http://www.dabiaoge.me/pvp/tool/pvp18183.html'
+    let cacheKey = `page:${url}`
+    let data = yield this.redis.get(cacheKey)
+    if (!data) {
+      data = yield fetchChuZhuang(url)
+      yield this.redis.set(cacheKey, data)
+    }
+    this.body = data
   },
 
   * getPaiqiPage () {
     const url = 'http://m.18183.com/yxzjol/201607/650642.html'
-    this.body = yield fetchPaiqi(url)
+    let cacheKey = `page:${url}`
+    let data = yield this.redis.get(cacheKey)
+    if (!data) {
+      data = yield fetchPaiqi(url)
+      yield this.redis.set(cacheKey, data)
+    }
+    this.body = data
   }
 }
 
@@ -227,12 +239,13 @@ function fetchChuZhuang (url) {
       if (err) {
         return reject(err)
       }
+      body = body.replace('/home/pvp/pvpzb/', 'http://www.dabiaoge.me/home/pvp/pvpzb')
+      body = body.replace('/home/pvp/attribute/', 'http://www.dabiaoge.me/home/pvp/attribute')
+      body = body.replace('/home/pvp/heroskill/', 'http://www.dabiaoge.me/home/pvp/heroskill')
+      body = body.replace('/home/pvp/hero/', 'http://www.dabiaoge.me/home/pvp/hero')
+      body = body.replace('/home/pvp/pvpzbt/type/', 'http://www.dabiaoge.me/home/pvp/pvpzbt/type/')
       let $ = cheerio.load(body)
-      $('header').remove()
-      $('nav').remove()
-      $('section.re-mod').remove()
-      $('.footer').remove()
-      $('.mod_download_sup').remove()
+      $('.header').remove()
       let result = minify($.html(), {
         removeComments: true,
         removeCommentsFromCDATA: true,
