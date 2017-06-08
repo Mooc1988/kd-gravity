@@ -12,7 +12,12 @@ module.exports = {
     password: null,
     config: {
       host: 'localhost',
-      dialect: 'postgres'
+      dialect: 'postgres',
+      pool: {
+        max: 10,
+        min: 5,
+        idle: 10000
+      }
     }
   },
   redisConfig: {

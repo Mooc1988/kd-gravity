@@ -13,7 +13,12 @@ module.exports = {
     config: {
       host: 'rdsfom58rh8q9mrl8885.pg.rds.aliyuncs.com',
       port: 3433,
-      dialect: 'postgres'
+      dialect: 'postgres',
+      pool: {
+        max: 20,
+        min: 5,
+        idle: 10000
+      }
     }
   },
   redisConfig: {

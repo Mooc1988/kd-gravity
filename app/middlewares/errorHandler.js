@@ -5,12 +5,7 @@ module.exports = function * (next) {
     yield next
     const status = this.status || 404
     if (status === 404) {
-      this.status = 404
-      if (process.env.NODE_ENV === 'development') {
-        this.body = this.config.apidoc
-      } else {
-        this.throw(404)
-      }
+      this.throw(404)
     }
   } catch (err) {
     this.app.emit('error', err, this)

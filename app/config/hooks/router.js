@@ -3,7 +3,7 @@
  */
 
 const _ = require('lodash')
-const Router = require('koa-joi-router')
+const Router = require('koa-router')
 const chalk = require('chalk')
 const {isGeneratorFunction, isValidateVerb} = require('../../utils/validator')
 const acl = require('../../middlewares/acl')
@@ -14,7 +14,7 @@ module.exports = app => cb => {
   try {
     app.koa.use(errorHandler)
     loadRouter(app.routes, rootRouter)
-    app.koa.use(rootRouter.middleware())
+    app.koa.use(rootRouter.routes())
     app.router = rootRouter
     console.log('init routers success')
     cb()
@@ -30,7 +30,7 @@ module.exports = app => cb => {
         if (name.indexOf('routes') >= 0) {
           if (routeConfig.ready) {
             try {
-              rootRouter.use(doLoad(routeConfig).middleware())
+              rootRouter.use(doLoad(routeConfig).routes())
             } catch (err) {
               console.error(chalk.red(`load api [${fullName}] failed: ${err.message || ''}`))
               throw err
@@ -48,15 +48,28 @@ module.exports = app => cb => {
     if (!routes || !_.isArray(routes)) {
       throw new Error('api must has routes property')
     }
-    let router = new Router()
+    let router
     if (_.isString(prefix) && !_.isEmpty(prefix)) {
       if (prefix.indexOf('/') !== 0) {
         throw new Error(`prefix must begin with '/'`)
       }
-      router.prefix(prefix)
+      router = new Router({prefix})
+    } else {
+      router = new Router()
     }
-    _.forEach(routes, config => router.route(routerChecker(config, api)))
+    _.forEach(routes, config => {
+      let {method, path, handler: handlerChain} = routerChecker(config, api)
+      let verb = getVerb(method)
+      router[verb](path, ...handlerChain)
+    })
     return router
+  }
+
+  function getVerb (method) {
+    if (method === 'GET') return 'get'
+    if (method === 'POST') return 'post'
+    if (method === 'PUT') return 'put'
+    if (method === 'DELETE') return 'del'
   }
 
 // 解析route配置
