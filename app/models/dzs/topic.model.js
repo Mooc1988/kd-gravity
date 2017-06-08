@@ -22,7 +22,7 @@ module.exports = function (sequelize) {
   }, {
     classMethods: {
       associate ({DzsCategory, DzsTopic, DzsCategoryTopic}) {
-        DzsTopic.belongsToMany(DzsCategory, {through: DzsCategoryTopic})
+        DzsTopic.belongsToMany(DzsCategory, {as: 'Categories', through: DzsCategoryTopic})
       }
     },
     tableName: 'dzs_topic'

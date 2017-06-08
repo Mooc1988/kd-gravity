@@ -123,6 +123,16 @@ module.exports = {
       method: 'GET',
       path: '/tops',
       handler: 'Dzs.getTopsByIds'
+    },
+    {
+      method: 'POST',
+      path: '/topics',
+      handler: 'Dzs.createTopic'
+    },
+    {
+      method: 'PUT',
+      path: '/topics/:topicId',
+      handler: 'Dzs.addToTopic'
     }
   ]
 }
