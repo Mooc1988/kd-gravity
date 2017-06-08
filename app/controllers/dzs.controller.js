@@ -308,6 +308,21 @@ module.exports = {
       top.previews = yield DzsBook.findAll({where: {id: {$in: books}}, attributes})
     }
     this.body = tops
+  },
+  * createTopic () {
+    let {DzsTopic} = this.models
+    let topic = DzsTopic.build(this.request.body)
+    this.body = yield topic.save()
+  },
+
+  * addToTopic () {
+    let {DzsTopic, DzsCategory} = this.models
+    let {categories} = this.request.body
+    let {topicId} = this.params
+    let topic = yield DzsTopic.findById(topicId)
+    let cs = yield DzsCategory.findAll({where: {id: {$in: categories}}})
+    yield topic.addCategories(cs)
+    this.body = yield topic.getCategories()
   }
 }
 
