@@ -65,6 +65,29 @@ module.exports = {
       method: 'GET',
       path: '/equipmentTags',
       handler: 'Wzry.findEquipmentTags'
+    },
+    {
+      method: 'POST',
+      path: '/banners',
+      handler: 'Wzry.addBanner',
+      roles: ['admin']
+    },
+    {
+      method: 'PUT',
+      path: '/banners/:bannerId',
+      handler: 'Wzry.modifyBanner',
+      roles: ['admin']
+    },
+    {
+      method: 'DELETE',
+      path: '/banners/:bannerId',
+      handler: 'Wzry.removeBannerById',
+      roles: ['admin']
+    },
+    {
+      method: 'GET',
+      path: '/banners',
+      handler: 'Wzry.findBanners'
     }
   ]
 }

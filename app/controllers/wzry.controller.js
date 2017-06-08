@@ -130,6 +130,36 @@ module.exports = {
       yield this.redis.set(cacheKey, data)
     }
     this.body = data
+  },
+  * addBanner () {
+    let {WzryBanner} = this.models
+    let banner = WzryBanner.build(this.request.body)
+    this.body = yield banner.save()
+  },
+
+  * modifyBanner () {
+    let {WzryBanner} = this.models
+    let {bannerId} = this.params
+    let banner = yield WzryBanner.findById(bannerId)
+    assert(banner, 400, 'banner不存在')
+    _.assign(banner, this.request.body)
+    this.body = yield banner.save()
+  },
+
+  * removeBannerById () {
+    let {WzryBanner} = this.models
+    let {bannerId} = this.params
+    let banner = yield WzryBanner.findById(bannerId)
+    assert(banner, 400, 'banner不存在')
+    yield banner.destroy()
+    this.status = 201
+  },
+
+  * findBanners () {
+    let {WzryBanner} = this.models
+    this.body = yield WzryBanner.findAll({
+      limit: 4
+    })
   }
 }
 
