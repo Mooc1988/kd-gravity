@@ -105,30 +105,35 @@ module.exports = {
 
   // 批量修改广告位
   * batchModifyAds () {
-    let {type, subType, UserId, position, ad, version} = this.request.body
-    assert(position, 400, '必须提供广告位')
+    let {type, subType, UserId, position, ad, version, meta} = this.request.body
     assert(version, 400, '必须提供版本号')
     assert(UserId, 400, '必须提供用户ID')
-    assert(!_.isEmpty(ad), 400, '必须提供修改数据')
     let {App, Ad} = this.models
     let condition = {type, version, UserId}
     if (subType) {
       condition.subType = subType
     }
-    let apps = yield App.findAll({where: condition, attributes: ['id']})
-    let ids = _.map(apps, a => a.id)
-    assert(!_.isEmpty(ids), 400, '没有符合要求的app')
-    ad = _.pick(ad, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
-    let where = {position, AppId: {$in: ids}}
-    let [affectedCount] = yield Ad.update(ad, {where})
-    let keys = _.map(ids, id => makeCacheKey(id))
-    let redis = this.redis
-    _.forEach(keys, key => {
-      redis.del(key).catch(err => console.error(err))
-    })
-    this.body = {affectedCount}
+    let apps = yield App.findAll({where: condition, attributes: ['id', 'meta']})
+    if (meta && apps) {
+      for (let app of apps) {
+        app.meta = _.assign(app.meta, meta)
+        yield app.save()
+      }
+    }
+    if (position && ad) {
+      let ids = _.map(apps, a => a.id)
+      assert(!_.isEmpty(ids), 400, '没有符合要求的app')
+      ad = _.pick(ad, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
+      let where = {position, AppId: {$in: ids}}
+      yield Ad.update(ad, {where})
+      let keys = _.map(ids, id => makeCacheKey(id))
+      let redis = this.redis
+      _.forEach(keys, key => {
+        redis.del(key).catch(err => console.error(err))
+      })
+    }
+    this.body = 'ok'
   }
-
 }
 
 function makeCacheKey (appId) {
