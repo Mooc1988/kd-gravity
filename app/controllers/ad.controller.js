@@ -126,12 +126,13 @@ module.exports = {
       ad = _.pick(ad, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
       let where = {position, AppId: {$in: ids}}
       yield Ad.update(ad, {where})
-      let keys = _.map(ids, id => makeCacheKey(id))
-      let redis = this.redis
-      _.forEach(keys, key => {
-        redis.del(key).catch(err => console.error(err))
-      })
     }
+    // 清理缓存
+    let keys = _.map(apps, app => makeCacheKey(app.id))
+    let redis = this.redis
+    _.forEach(keys, key => {
+      redis.del(key).catch(err => console.error(err))
+    })
     this.body = 'ok'
   }
 }
