@@ -90,7 +90,7 @@ module.exports = {
       let hero = yield WzryHero.findById(heroId)
       assert(hero, 400, 'hero不存在')
       let {link} = hero
-      data = yield fetchHeroOrEquipPage(link)
+      data = yield fetchHeroPage(link)
       yield this.redis.set(cacheKey, data)
     }
     this.body = {html: data}
@@ -161,6 +161,36 @@ module.exports = {
       limit: 4
     })
   }
+}
+
+function fetchHeroPage (uri) {
+  const converterStream = iconv.decodeStream('GBK')
+  request.get({uri, encoding: null}).pipe(converterStream)
+  return new Promise(function (resolve, reject) {
+    converterStream.collect(function (err, body) {
+      if (err) {
+        return reject(err)
+      }
+      let $ = cheerio.load(body)
+      $('.header').remove()
+      $('.srcmenuwp').remove()
+      $('.hdimg').remove()
+      $('.areahd').remove()
+      $('.herobtn').remove()
+      $('.bnwrap').remove()
+      $('.pinglun').remove()
+      $('.footwp').remove()
+      let result = minify($.html(), {
+        removeComments: true,
+        removeCommentsFromCDATA: true,
+        collapseWhitespace: true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes: true,
+        removeEmptyAttributes: true
+      })
+      resolve(result)
+    })
+  })
 }
 
 function fetchHeroOrEquipPage (uri) {
@@ -325,3 +355,4 @@ function getPage (query) {
   const offset = (page - 1) * LIMIT
   return {offset, limit: LIMIT}
 }
+
