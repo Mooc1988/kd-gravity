@@ -101,6 +101,11 @@ module.exports = {
     },
     {
       method: 'GET',
+      path: '/coupons',
+      handler: 'Wzry.findCoupons'
+    },
+    {
+      method: 'GET',
       path: '/prizeRecords/me',
       handler: 'Wzry.getMyRecords'
     },

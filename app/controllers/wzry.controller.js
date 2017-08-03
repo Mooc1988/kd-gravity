@@ -38,6 +38,15 @@ const PRIZE_CODE = [
 
 module.exports = {
 
+  * findCoupons () {
+    let codes = ['1001', '1002', '1003', '1004', '1005', '1006']
+    let ret = {}
+    for (let code of codes) {
+      let cacheKey = getCacheKey(code)
+      ret[code] = yield this.redis.llen(cacheKey)
+    }
+    this.body = ret
+  },
   * addCoupons () {
     let {prizeCode, data} = this.request.body
     assert(prizeCode, 400, 'invalid params')
