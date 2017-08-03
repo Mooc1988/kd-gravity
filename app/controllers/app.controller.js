@@ -7,7 +7,7 @@ const LIMIT = 50
 
 module.exports = {
 
-  // 过去APP 列表
+  // 获取APP 列表
   * list () {
     let {App, User} = this.models
     let include = [{

@@ -41,6 +41,7 @@ module.exports = app => cb => {
       seq.sync()
     }
     app.models = models
+    app.sequelize = seq
     console.log('init database and models successfully')
     cb()
   } catch (err) {

@@ -88,6 +88,41 @@ module.exports = {
       method: 'GET',
       path: '/banners',
       handler: 'Wzry.findBanners'
+    },
+    {
+      method: 'POST',
+      path: '/lotteries',
+      handler: 'Wzry.getLottery'
+    },
+    {
+      method: 'POST',
+      path: '/coupons',
+      handler: 'Wzry.addCoupons'
+    },
+    {
+      method: 'GET',
+      path: '/prizeRecords/me',
+      handler: 'Wzry.getMyRecords'
+    },
+    {
+      method: 'PUT',
+      path: '/addLotteryTimes',
+      handler: 'Wzry.addLotteryTimes'
+    },
+    {
+      method: 'GET',
+      path: '/recentRecords',
+      handler: 'Wzry.getRecentRecords'
+    },
+    {
+      method: 'GET',
+      path: '/lotteries/me',
+      handler: 'Wzry.getUserInfo'
+    },
+    {
+      method: 'PUT',
+      path: '/lotteries/me',
+      handler: 'Wzry.finishUserInfo'
     }
   ]
 }
