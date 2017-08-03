@@ -93,9 +93,9 @@ module.exports = {
     let {Lottery, PrizeRecord} = this.models
     let lottery = yield Lottery.findOne({where: {deviceId}})
     assert(lottery, 400, 'invalid params')
-    lottery.totalTimes += 1
     let ret = {award: -1}
     if (lottery.times > 0) {
+      lottery.totalTimes += 1
       lottery.times -= 1
       let award = executeAward(lottery)
       if (award > 0) {
