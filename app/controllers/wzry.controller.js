@@ -68,7 +68,7 @@ module.exports = {
     let {deviceId} = this.query
     assert(deviceId, 400, 'invalid params')
     let {Lottery} = this.models
-    let lottery = yield Lottery.findOne({deviceId})
+    let lottery = yield Lottery.findOne({where: {deviceId}})
     if (!lottery) {
       lottery = Lottery.build({deviceId, times: 3})
       yield lottery.save()
@@ -81,7 +81,7 @@ module.exports = {
     assert(deviceId, 400, 'invalid params')
     assert(username, 400, 'invalid params')
     let {Lottery} = this.models
-    let lottery = yield Lottery.findOne({deviceId})
+    let lottery = yield Lottery.findOne({where: {deviceId}})
     assert(lottery, 400, 'lottery not found')
     lottery.username = username
     this.body = yield lottery.save()
@@ -91,7 +91,7 @@ module.exports = {
     let {deviceId} = this.request.body
     assert(deviceId, 400, 'invalid params')
     let {Lottery, PrizeRecord} = this.models
-    let lottery = yield Lottery.findOne({deviceId})
+    let lottery = yield Lottery.findOne({where: {deviceId}})
     assert(lottery, 400, 'invalid params')
     lottery.totalTimes += 1
     let ret = {award: -1}
@@ -125,7 +125,7 @@ module.exports = {
     let {deviceId} = this.query
     assert(deviceId, 400, 'invalid params')
     let {PrizeRecord} = this.models
-    this.body = yield PrizeRecord.findAll({deviceId})
+    this.body = yield PrizeRecord.findAll({where: {deviceId}})
   },
 
   * addLotteryTimes () {
@@ -138,7 +138,7 @@ module.exports = {
     let times = yield this.redis.get(key)
     let {Lottery} = this.models
     times = times ? parseInt(times) : 1
-    let lottery = yield Lottery.findOne({deviceId})
+    let lottery = yield Lottery.findOne({where: {deviceId}})
     assert(times <= 3, 400, 'beyond max times')
     if (!lottery) {
       lottery = Lottery.build({deviceId, times: 3})
