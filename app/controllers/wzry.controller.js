@@ -11,7 +11,7 @@ const minify = require('html-minifier').minify
 const AliasMethod = require('../utils/aliasMethod')
 const LIMIT = 30
 
-const samples = new AliasMethod([974000, 10000, 10000, 3000, 3000, 1, 0])
+const samples = new AliasMethod([960000, 15000, 15000, 5000, 5000, 1, 0])
 const PRIZE_CODE = [
   {
     code: '0',
