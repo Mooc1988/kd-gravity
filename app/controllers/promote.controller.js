@@ -69,7 +69,7 @@ module.exports = {
   * findProducts (){
     let {appId} = this.params
     let {PromoteProduct} = this.models
-    let order = [['id', 'DESC']]
+    let order = [['id', 'AESC']]
     this.body = yield PromoteProduct.findAll({order, where: {AppId: appId}})
   }
 }
