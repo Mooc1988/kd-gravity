@@ -20,7 +20,7 @@ module.exports = function (sequelize) {
       type: ARRAY(STRING(128)),
       allowNull: false
     },
-    // 是否开启
+    // e否开启
     enable: {
       type: BOOLEAN,
       defaultValue: true
@@ -36,7 +36,12 @@ module.exports = function (sequelize) {
     chartbox: {
       type: JSONB
     },
-    gdt: {type: JSONB},
+    gdt: {
+      type: JSONB
+    },
+    custom: {
+      type: JSONB
+    },
     meta: {
       type: JSONB
     }

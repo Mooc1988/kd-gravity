@@ -123,7 +123,7 @@ module.exports = {
     if (position && ad) {
       let ids = _.map(apps, a => a.id)
       assert(!_.isEmpty(ids), 400, '没有符合要求的app')
-      ad = _.pick(ad, ['showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
+      ad = _.pick(ad, ['custom', 'showType', 'baidu', 'google', 'chartbox', 'meta', 'enable'])
       let where = {position, AppId: {$in: ids}}
       yield Ad.update(ad, {where})
     }
