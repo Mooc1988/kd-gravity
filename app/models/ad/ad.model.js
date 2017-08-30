@@ -36,6 +36,12 @@ module.exports = function (sequelize) {
     chartbox: {
       type: JSONB
     },
+    vungle: {
+      type: JSONB
+    },
+    jusha: {
+      type: JSONB
+    },
     gdt: {
       type: JSONB
     },
